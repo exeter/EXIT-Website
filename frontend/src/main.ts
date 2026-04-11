@@ -4,6 +4,18 @@ import './style.css'
 
 type Route = '/' | '/schedule' | '/about' | '/register'
 
+type RegistrationPayload = {
+  email: string
+  name: string
+  phoneNumber: string
+  mailingAddress: string
+  password: string
+  confirmPassword: string
+  honeypot: string
+}
+
+type RegisterFieldName = keyof Omit<RegistrationPayload, 'honeypot'>
+
 type ScheduleRow = {
   time: string
   title: string
@@ -117,8 +129,6 @@ const directors = [
   { name: 'Maya Shah', email: 'mnshah@exeter.edu' },
   { name: 'Robert Joo', email: 'sjoo@exeter.edu' }
 ] as const
-
-const registrationEmail = directors[0].email
 
 const appRoot = document.querySelector<HTMLDivElement>('#app')
 
@@ -277,37 +287,217 @@ function renderRegisterPage(): string {
   return `
     <section class="page-intro">
       <p class="section-label">Register</p>
-      <h1>Register</h1>
+      <h1>Sign Up</h1>
       <p class="page-copy">
-        Registration is being coordinated directly with the organizing team for this year's online event.
+        Each coach should sign up for exactly one account. Teams, students, and parents do not need to sign up.
       </p>
     </section>
 
     <section class="register-grid">
-      <section class="panel">
-        <p class="section-label">How it works</p>
-        <h2>What to send us.</h2>
-        <ul class="fact-list">
-          <li>School or organization name</li>
-          <li>Primary coach or adult contact</li>
-          <li>Estimated number of students or teams</li>
-          <li>Any questions about eligibility, timing, or logistics</li>
-        </ul>
+      <section class="panel panel-feature">
+        <p class="section-label">Registration Details</p>
+        <h2>Coach account registration.</h2>
+        <p class="punch">
+          If you are a student who would like to participate in EMCC, please contact your school's coach.
+          If your school is not participating and you would like to participate as an individual,
+          your parent or guardian can sign up as your coach.
+        </p>
+        <p class="register-login-text">Already have an account? You can <a href="#">log in here</a>.</p>
       </section>
 
-      <section class="panel panel-accent">
-        <p class="section-label">Contact</p>
-        <h2>Reach the team.</h2>
-        <p class="punch">
-          Email us to express interest and we will reply with next steps, timing, and any additional event details.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="mailto:${escapeHtml(registrationEmail)}">Email to Register</a>
-          <a class="button button-secondary" href="#/about">View Organizers</a>
-        </div>
+      <section class="panel panel-accent register-form-panel" aria-label="Registration form">
+        <form id="register-form" novalidate>
+          <div class="form-stack">
+            <div class="field-wrap">
+              <input class="field" type="email" name="email" placeholder="Email *" autocomplete="email" required />
+              <p class="error-msg" data-error-for="email"></p>
+            </div>
+
+            <div class="field-wrap">
+              <input class="field" type="text" name="name" placeholder="Name *" autocomplete="name" required />
+              <p class="error-msg" data-error-for="name"></p>
+            </div>
+
+            <div class="field-wrap">
+              <input class="field" type="tel" name="phoneNumber" placeholder="Phone Number *" autocomplete="tel" required />
+              <p class="error-msg" data-error-for="phoneNumber"></p>
+            </div>
+
+            <div class="field-wrap">
+              <input class="field" type="text" name="mailingAddress" placeholder="Mailing Address *" autocomplete="street-address" required />
+              <p class="error-msg" data-error-for="mailingAddress"></p>
+            </div>
+
+            <div class="field-wrap">
+              <input class="field" type="password" name="password" placeholder="Password *" autocomplete="new-password" required />
+              <p class="error-msg" data-error-for="password"></p>
+            </div>
+
+            <div class="field-wrap">
+              <input class="field" type="password" name="confirmPassword" placeholder="Confirm Password *" autocomplete="new-password" required />
+              <p class="error-msg" data-error-for="confirmPassword"></p>
+            </div>
+
+            <input type="text" name="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" hidden />
+
+            <div class="actions">
+              <button class="button button-primary register-submit" type="submit">SIGN UP</button>
+            </div>
+          </div>
+        </form>
+
+        <p class="status" id="register-status" aria-live="polite"></p>
+        <p class="register-confirm-copy">You should receive a confirmation email once you have signed up successfully.</p>
       </section>
     </section>
   `
+}
+
+function normalizePhone(value: string): string {
+  return value.replace(/[^\d+\-()\s]/g, '').replace(/\s+/g, ' ').trim()
+}
+
+function validateRegistration(payload: RegistrationPayload): Partial<Record<RegisterFieldName, string>> {
+  const errors: Partial<Record<RegisterFieldName, string>> = {}
+
+  if (!payload.email.trim()) {
+    errors.email = 'Email is required.'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+    errors.email = 'Enter a valid email address.'
+  }
+
+  if (!payload.name.trim()) {
+    errors.name = 'Name is required.'
+  }
+
+  if (!payload.phoneNumber.trim()) {
+    errors.phoneNumber = 'Phone number is required.'
+  } else if (payload.phoneNumber.replace(/\D/g, '').length < 10) {
+    errors.phoneNumber = 'Enter a valid phone number.'
+  }
+
+  if (!payload.mailingAddress.trim()) {
+    errors.mailingAddress = 'Mailing address is required.'
+  }
+
+  if (!payload.password) {
+    errors.password = 'Password is required.'
+  } else if (payload.password.length < 8) {
+    errors.password = 'Use at least 8 characters.'
+  }
+
+  if (!payload.confirmPassword) {
+    errors.confirmPassword = 'Please confirm your password.'
+  } else if (payload.password !== payload.confirmPassword) {
+    errors.confirmPassword = 'Passwords do not match.'
+  }
+
+  return errors
+}
+
+function setupRegisterForm() {
+  const form = document.querySelector<HTMLFormElement>('#register-form')
+  const statusNode = document.querySelector<HTMLParagraphElement>('#register-status')
+
+  if (!form || !statusNode) {
+    return
+  }
+
+  const registerForm = form
+  const registerStatusNode = statusNode
+
+  const fields: RegisterFieldName[] = [
+    'email',
+    'name',
+    'phoneNumber',
+    'mailingAddress',
+    'password',
+    'confirmPassword'
+  ]
+
+  function setFieldError(name: RegisterFieldName, message?: string) {
+    const input = registerForm.elements.namedItem(name) as HTMLInputElement | null
+    const msg = registerForm.querySelector<HTMLParagraphElement>(`[data-error-for="${name}"]`)
+
+    if (!input || !msg) {
+      return
+    }
+
+    input.setAttribute('aria-invalid', message ? 'true' : 'false')
+    msg.textContent = message ?? ''
+  }
+
+  function setStatus(message: string, kind: 'idle' | 'success' | 'error') {
+    registerStatusNode.textContent = message
+    registerStatusNode.dataset.kind = kind
+  }
+
+  let isSubmitting = false
+
+  registerForm.addEventListener('submit', async event => {
+    event.preventDefault()
+
+    if (isSubmitting) {
+      return
+    }
+
+    const formData = new FormData(registerForm)
+
+    const payload: RegistrationPayload = {
+      email: String(formData.get('email') ?? '').trim(),
+      name: String(formData.get('name') ?? '').trim(),
+      phoneNumber: normalizePhone(String(formData.get('phoneNumber') ?? '')),
+      mailingAddress: String(formData.get('mailingAddress') ?? '').trim(),
+      password: String(formData.get('password') ?? ''),
+      confirmPassword: String(formData.get('confirmPassword') ?? ''),
+      honeypot: String(formData.get('honeypot') ?? '')
+    }
+
+    fields.forEach(name => setFieldError(name))
+    setStatus('', 'idle')
+
+    const errors = validateRegistration(payload)
+    const hasErrors = Object.keys(errors).length > 0
+
+    if (hasErrors) {
+      fields.forEach(name => setFieldError(name, errors[name]))
+      setStatus('Please fix the highlighted fields and submit again.', 'error')
+      return
+    }
+
+    const submitButton = registerForm.querySelector<HTMLButtonElement>('button[type="submit"]')
+    if (!submitButton) {
+      return
+    }
+
+    isSubmitting = true
+    submitButton.disabled = true
+    setStatus('Submitting registration...', 'idle')
+
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as { error?: string } | null
+        throw new Error(body?.error ?? 'Registration failed. Please try again.')
+      }
+
+      registerForm.reset()
+      setStatus('Registration submitted successfully. Please check your email.', 'success')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unexpected error. Please try again.'
+      setStatus(message, 'error')
+    } finally {
+      isSubmitting = false
+      submitButton.disabled = false
+    }
+  })
 }
 
 function renderApp() {
@@ -355,6 +545,10 @@ function renderApp() {
     if (viz) {
       cleanupCanvas = mountNetworkCanvas(viz)
     }
+  }
+
+  if (currentRoute === '/register') {
+    setupRegisterForm()
   }
 }
 

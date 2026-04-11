@@ -297,6 +297,88 @@ ul {
   gap: 24px;
 }
 
+.register-login-text {
+  margin-top: 14px;
+  color: #1f7a2f;
+}
+
+.register-form-panel {
+  width: min(460px, 100%);
+}
+
+.form-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.field-wrap {
+  display: grid;
+  gap: 4px;
+}
+
+.field {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+  font-size: 0.96rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field::placeholder {
+  color: var(--ink-faint);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--exeter-red);
+  box-shadow: 0 0 0 3px rgba(157, 34, 53, 0.12);
+}
+
+.field[aria-invalid='true'] {
+  border-color: #b42318;
+  box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.12);
+}
+
+.error-msg {
+  min-height: 1.05rem;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #b42318;
+}
+
+.actions {
+  margin-top: 8px;
+}
+
+.register-submit {
+  width: 100%;
+}
+
+.status {
+  min-height: 1.2rem;
+  margin: 12px 0 0;
+  color: var(--ink-faint);
+  font-size: 0.86rem;
+}
+
+.status[data-kind='success'] {
+  color: #067647;
+}
+
+.status[data-kind='error'] {
+  color: #b42318;
+}
+
+.register-confirm-copy {
+  margin-top: 12px;
+  color: var(--ink-muted);
+  font-size: 0.94rem;
+}
+
 .home-section-card h2,
 .detail-grid h2,
 .register-grid h2,
