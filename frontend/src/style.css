@@ -308,6 +308,14 @@ ul {
   gap: 24px;
 }
 
+.register-grid {
+  justify-items: center;
+}
+
+.register-panel {
+  width: min(760px, 100%);
+}
+
 .register-login-text {
   margin-top: 14px;
   color: #1f7a2f;
@@ -315,6 +323,8 @@ ul {
 
 .register-form-panel {
   width: min(460px, 100%);
+  margin: 18px 0 0;
+  padding-top: 8px;
 }
 
 .form-stack {

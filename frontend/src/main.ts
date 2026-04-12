@@ -415,23 +415,22 @@ function renderRegisterPage(): string {
       </section>
 
       <section class="register-grid">
-        <section class="panel panel-feature">
+        <section class="panel panel-feature register-panel" aria-label="Sign in required">
           <p class="section-label">Registration Details</p>
           <h2>Coach account registration.</h2>
           <p class="punch">
             Registration is tied to your signed-in account so your email is captured automatically.
           </p>
-        </section>
-
-        <section class="panel panel-accent register-form-panel" aria-label="Sign in required">
-          <p class="punch">Please sign in before filling out registration.</p>
-          <div class="actions">
-            <button
-              id="register-signin-button"
-              class="button button-primary"
-              type="button"
-              ${!clerkReady || authActionInFlight ? 'disabled' : ''}
-            >${clerkReady ? 'Sign in to continue' : 'Auth loading...'}</button>
+          <div class="register-form-panel">
+            <p class="punch">Please sign in before filling out registration.</p>
+            <div class="actions">
+              <button
+                id="register-signin-button"
+                class="button button-primary"
+                type="button"
+                ${!clerkReady || authActionInFlight ? 'disabled' : ''}
+              >${clerkReady ? 'Sign in to continue' : 'Auth loading...'}</button>
+            </div>
           </div>
         </section>
       </section>
@@ -448,7 +447,7 @@ function renderRegisterPage(): string {
     </section>
 
     <section class="register-grid">
-      <section class="panel panel-feature">
+      <section class="panel panel-feature register-panel">
         <p class="section-label">Registration Details</p>
         <h2>Coach account registration.</h2>
         <p class="punch">
@@ -457,62 +456,61 @@ function renderRegisterPage(): string {
           your parent or guardian can sign up as your coach.
         </p>
         <p class="register-login-text">Signed in as ${escapeHtml(signedInEmail ?? '')}.</p>
-      </section>
+        <section class="register-form-panel" aria-label="Registration form">
+          <form id="register-form" novalidate>
+            <div class="form-stack">
+              <div class="field-wrap">
+                <input class="field" type="text" name="firstName" placeholder="First Name *" autocomplete="given-name" required />
+                <p class="error-msg" data-error-for="firstName"></p>
+              </div>
 
-      <section class="panel panel-accent register-form-panel" aria-label="Registration form">
-        <form id="register-form" novalidate>
-          <div class="form-stack">
-            <div class="field-wrap">
-              <input class="field" type="text" name="firstName" placeholder="First Name *" autocomplete="given-name" required />
-              <p class="error-msg" data-error-for="firstName"></p>
+              <div class="field-wrap">
+                <input class="field" type="text" name="lastName" placeholder="Last Name *" autocomplete="family-name" required />
+                <p class="error-msg" data-error-for="lastName"></p>
+              </div>
+
+              <div class="field-wrap">
+                <input class="field" type="tel" name="phoneNumber" placeholder="Phone Number *" autocomplete="tel" required />
+                <p class="error-msg" data-error-for="phoneNumber"></p>
+              </div>
+
+              <div class="field-wrap">
+                <input class="field" type="text" name="school" placeholder="School *" autocomplete="organization" required />
+                <p class="error-msg" data-error-for="school"></p>
+              </div>
+
+              <div class="field-wrap">
+                <input class="field" type="text" name="cityStateCountry" placeholder="City, State/Province, Country *" autocomplete="address-level2" required />
+                <p class="error-msg" data-error-for="cityStateCountry"></p>
+              </div>
+
+              <div class="field-wrap">
+                <select class="field" name="grade" required>
+                  <option value="">Grade *</option>
+                  ${gradeOptions.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
+                </select>
+                <p class="error-msg" data-error-for="grade"></p>
+              </div>
+
+              <div class="field-wrap">
+                <select class="field" name="backgroundLevel" required>
+                  <option value="">Background Level *</option>
+                  ${backgroundLevelOptions.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
+                </select>
+                <p class="error-msg" data-error-for="backgroundLevel"></p>
+              </div>
+
+              <input type="text" name="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" hidden />
+
+              <div class="actions">
+                <button class="button button-primary register-submit" type="submit">SIGN UP</button>
+              </div>
             </div>
+          </form>
 
-            <div class="field-wrap">
-              <input class="field" type="text" name="lastName" placeholder="Last Name *" autocomplete="family-name" required />
-              <p class="error-msg" data-error-for="lastName"></p>
-            </div>
-
-            <div class="field-wrap">
-              <input class="field" type="tel" name="phoneNumber" placeholder="Phone Number *" autocomplete="tel" required />
-              <p class="error-msg" data-error-for="phoneNumber"></p>
-            </div>
-
-            <div class="field-wrap">
-              <input class="field" type="text" name="school" placeholder="School *" autocomplete="organization" required />
-              <p class="error-msg" data-error-for="school"></p>
-            </div>
-
-            <div class="field-wrap">
-              <input class="field" type="text" name="cityStateCountry" placeholder="City, State/Province, Country *" autocomplete="address-level2" required />
-              <p class="error-msg" data-error-for="cityStateCountry"></p>
-            </div>
-
-            <div class="field-wrap">
-              <select class="field" name="grade" required>
-                <option value="">Grade *</option>
-                ${gradeOptions.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
-              </select>
-              <p class="error-msg" data-error-for="grade"></p>
-            </div>
-
-            <div class="field-wrap">
-              <select class="field" name="backgroundLevel" required>
-                <option value="">Background Level *</option>
-                ${backgroundLevelOptions.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
-              </select>
-              <p class="error-msg" data-error-for="backgroundLevel"></p>
-            </div>
-
-            <input type="text" name="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" hidden />
-
-            <div class="actions">
-              <button class="button button-primary register-submit" type="submit">SIGN UP</button>
-            </div>
-          </div>
-        </form>
-
-        <p class="status" id="register-status" aria-live="polite"></p>
-        <p class="register-confirm-copy">You should receive a confirmation email once you have signed up successfully.</p>
+          <p class="status" id="register-status" aria-live="polite"></p>
+          <p class="register-confirm-copy">You should receive a confirmation email once you have signed up successfully.</p>
+        </section>
       </section>
     </section>
   `
