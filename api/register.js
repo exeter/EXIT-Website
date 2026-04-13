@@ -1,11 +1,19 @@
+const path = require('node:path')
+const { pathToFileURL } = require('node:url')
+
+const backendLibDirectory = path.resolve(__dirname, '../backend/lib')
 let registrationModulesPromise
+
+function getBackendModuleUrl(fileName) {
+  return pathToFileURL(path.join(backendLibDirectory, fileName)).href
+}
 
 function loadRegistrationModules() {
   if (!registrationModulesPromise) {
     registrationModulesPromise = Promise.all([
-      import('../backend/lib/sheets.js'),
-      import('../backend/lib/email-resend.js'),
-      import('../backend/lib/validate.js')
+      import(getBackendModuleUrl('sheets.js')),
+      import(getBackendModuleUrl('email-resend.js')),
+      import(getBackendModuleUrl('validate.js'))
     ])
       .then(([sheetsModule, emailModule, validateModule]) => ({
         appendRegistrationRow: sheetsModule.appendRegistrationRow,
@@ -98,26 +106,26 @@ module.exports = async function handler(req, res) {
     return json(res, 405, { error: 'Method Not Allowed' })
   }
 
-  const { appendRegistrationRow, sendConfirmationEmail, parseRegistrationInput } = await loadRegistrationModules()
-
-  const parsed = parseRegistrationInput(req.body)
-  if (!parsed.ok) {
-    return json(res, 400, {
-      error: parsed.error,
-      details: parsed.details
-    })
-  }
-
-  const registration = {
-    ...parsed.value,
-    ipAddress: getClientIp(req)
-  }
-
-  if (registration.honeypot && registration.honeypot.trim().length > 0) {
-    return json(res, 202, { ok: true })
-  }
-
   try {
+    const { appendRegistrationRow, sendConfirmationEmail, parseRegistrationInput } = await loadRegistrationModules()
+
+    const parsed = parseRegistrationInput(req.body)
+    if (!parsed.ok) {
+      return json(res, 400, {
+        error: parsed.error,
+        details: parsed.details
+      })
+    }
+
+    const registration = {
+      ...parsed.value,
+      ipAddress: getClientIp(req)
+    }
+
+    if (registration.honeypot && registration.honeypot.trim().length > 0) {
+      return json(res, 202, { ok: true })
+    }
+
     const sheetResult = await appendRegistrationRow(registration)
 
     let emailSent = true
@@ -141,6 +149,10 @@ module.exports = async function handler(req, res) {
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unexpected server error.'
+    console.error('Failed to process registration request', {
+      message,
+      stack: error instanceof Error ? error.stack : undefined
+    })
     return json(res, 500, {
       error: 'Failed to process registration.',
       detail: message

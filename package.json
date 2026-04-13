@@ -1,0 +1,15 @@
+{
+  "name": "exit-website-deployment",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm install --prefix frontend && npm run build --prefix frontend",
+    "dev": "npm run dev --prefix frontend"
+  },
+  "dependencies": {
+    "googleapis": "^154.0.0",
+    "nodemailer": "^8.0.5",
+    "resend": "^6.10.0",
+    "zod": "^3.24.2"
+  }
+}

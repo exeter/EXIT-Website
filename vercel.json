@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/register.js": {
+      "runtime": "nodejs20.x",
+      "includeFiles": "backend/**"
+    }
+  }
+}
