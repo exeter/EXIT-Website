@@ -1,6 +1,25 @@
-import { appendRegistrationRow } from '../backend/lib/sheets.js'
-import { sendConfirmationEmail } from '../backend/lib/email-resend.js'
-import { parseRegistrationInput } from '../backend/lib/validate.js'
+let registrationModulesPromise
+
+function loadRegistrationModules() {
+  if (!registrationModulesPromise) {
+    registrationModulesPromise = Promise.all([
+      import('../backend/lib/sheets.js'),
+      import('../backend/lib/email-resend.js'),
+      import('../backend/lib/validate.js')
+    ])
+      .then(([sheetsModule, emailModule, validateModule]) => ({
+        appendRegistrationRow: sheetsModule.appendRegistrationRow,
+        sendConfirmationEmail: emailModule.sendConfirmationEmail,
+        parseRegistrationInput: validateModule.parseRegistrationInput
+      }))
+      .catch(error => {
+        registrationModulesPromise = undefined
+        throw error
+      })
+  }
+
+  return registrationModulesPromise
+}
 
 function json(res, status, body) {
   res.status(status).setHeader('Content-Type', 'application/json')
@@ -72,12 +91,14 @@ function getClientIp(req) {
   return nonLoopback || candidates[0] || ''
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Allow', 'POST')
 
   if (req.method !== 'POST') {
     return json(res, 405, { error: 'Method Not Allowed' })
   }
+
+  const { appendRegistrationRow, sendConfirmationEmail, parseRegistrationInput } = await loadRegistrationModules()
 
   const parsed = parseRegistrationInput(req.body)
   if (!parsed.ok) {
