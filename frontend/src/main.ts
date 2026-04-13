@@ -166,7 +166,7 @@ const directors = [
   { name: 'Robert Joo', email: 'sjoo@exeter.edu' }
 ] as const
 
-const gradeOptions = ['6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
+const gradeOptions = ['4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
 const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Competitive'] as const
 
 const appRoot = document.querySelector<HTMLDivElement>('#app')
@@ -410,14 +410,14 @@ function renderRegisterPage(): string {
         <p class="section-label">Register</p>
         <h1>Sign Up</h1>
         <p class="page-copy">
-          Sign in first to continue with coach registration.
+          Sign in first to continue with student registration.
         </p>
       </section>
 
       <section class="register-grid">
         <section class="panel panel-feature register-panel" aria-label="Sign in required">
           <p class="section-label">Registration Details</p>
-          <h2>Coach account registration.</h2>
+          <h2>Student account registration.</h2>
           <p class="punch">
             Registration is tied to your signed-in account so your email is captured automatically.
           </p>
@@ -442,18 +442,16 @@ function renderRegisterPage(): string {
       <p class="section-label">Register</p>
       <h1>Sign Up</h1>
       <p class="page-copy">
-        Each coach should sign up for exactly one account. Teams, students, and parents do not need to sign up.
+        Each student should sign up for an account using the form below. 
       </p>
     </section>
 
     <section class="register-grid">
       <section class="panel panel-feature register-panel">
         <p class="section-label">Registration Details</p>
-        <h2>Coach account registration.</h2>
+        <h2>Student account registration.</h2>
         <p class="punch">
-          If you are a student who would like to participate in EMCC, please contact your school's coach.
-          If your school is not participating and you would like to participate as an individual,
-          your parent or guardian can sign up as your coach.
+          Fill out the form below to register for an account. Please log in using an email address that you check regularly, as we will send important contest information and updates to the email you provide during registration.
         </p>
         <p class="register-login-text">Signed in as ${escapeHtml(signedInEmail ?? '')}.</p>
         <section class="register-form-panel" aria-label="Registration form">
