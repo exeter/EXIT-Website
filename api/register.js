@@ -12,12 +12,10 @@ function loadRegistrationModules() {
   if (!registrationModulesPromise) {
     registrationModulesPromise = Promise.all([
       import(getBackendModuleUrl('sheets.js')),
-      import(getBackendModuleUrl('email-resend.js')),
       import(getBackendModuleUrl('validate.js'))
     ])
-      .then(([sheetsModule, emailModule, validateModule]) => ({
+      .then(([sheetsModule, validateModule]) => ({
         appendRegistrationRow: sheetsModule.appendRegistrationRow,
-        sendConfirmationEmail: emailModule.sendConfirmationEmail,
         parseRegistrationInput: validateModule.parseRegistrationInput
       }))
       .catch(error => {
@@ -107,7 +105,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { appendRegistrationRow, sendConfirmationEmail, parseRegistrationInput } = await loadRegistrationModules()
+    const { appendRegistrationRow, parseRegistrationInput } = await loadRegistrationModules()
 
     const parsed = parseRegistrationInput(req.body)
     if (!parsed.ok) {
@@ -128,24 +126,9 @@ module.exports = async function handler(req, res) {
 
     const sheetResult = await appendRegistrationRow(registration)
 
-    let emailSent = true
-    let emailError = ''
-    try {
-      await sendConfirmationEmail(registration)
-    } catch (error) {
-      emailSent = false
-      emailError = error instanceof Error ? error.message : 'Email delivery failed.'
-      console.error('Failed to send confirmation email', {
-        email: registration.email,
-        message: emailError
-      })
-    }
-
     return json(res, 200, {
       ok: true,
-      storedAt: sheetResult.timestamp,
-      emailSent,
-      ...(emailError ? { emailError } : {})
+      storedAt: sheetResult.timestamp
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unexpected server error.'

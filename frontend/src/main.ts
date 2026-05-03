@@ -1,5 +1,5 @@
 import { Clerk } from '@clerk/clerk-js';
-import eccLogoUrl from '../ECC Logo with E.svg'
+import eccLogoUrl from '../ecc-logo.png'
 import './style.css'
 
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -213,41 +213,6 @@ function getRoute(): Route {
   return '/'
 }
 
-function wait(ms: number): Promise<void> {
-  return new Promise(resolve => {
-    window.setTimeout(resolve, ms)
-  })
-}
-
-async function waitForSessionChange(previousSessionId: string | null, timeoutMs = 1600): Promise<string | null> {
-  const intervalMs = 80
-  const deadline = Date.now() + timeoutMs
-
-  while (Date.now() < deadline) {
-    const nextSessionId = clerk?.session?.id ?? null
-    if (nextSessionId !== previousSessionId) {
-      return nextSessionId
-    }
-
-    await wait(intervalMs)
-  }
-
-  return clerk?.session?.id ?? null
-}
-
-async function waitForSignedInState(timeoutMs = 2400): Promise<void> {
-  const intervalMs = 80
-  const deadline = Date.now() + timeoutMs
-
-  while (Date.now() < deadline) {
-    if (clerk?.session?.id && clerk.user) {
-      return
-    }
-
-    await wait(intervalMs)
-  }
-}
-
 function getSignedInEmail(): string | null {
   const primaryEmail = clerk?.user?.primaryEmailAddress?.emailAddress
   if (primaryEmail) {
@@ -260,29 +225,64 @@ function getSignedInEmail(): string | null {
 
 async function performAuthAction() {
   if (!clerk || authActionInFlight) {
+    console.log('[auth] performAuthAction skipped', {
+      hasClerk: Boolean(clerk),
+      authActionInFlight
+    })
     return
   }
 
   authActionInFlight = true
+  console.log('[auth] performAuthAction start', {
+    hasUser: Boolean(clerk.user),
+    sessionId: clerk.session?.id ?? null,
+    route: getRoute()
+  })
   renderApp()
+  let shouldReloadAfterSignIn = false
 
   try {
     if (clerk.user) {
+      console.log('[auth] signing out')
       await clerk.signOut()
+      console.log('[auth] sign out complete', {
+        sessionId: clerk.session?.id ?? null,
+        hasUser: Boolean(clerk.user)
+      })
     } else {
-      const sessionIdBeforeAction = clerk.session?.id ?? null
+      console.log('[auth] opening sign-in modal')
       await clerk.openSignIn()
-      const nextSessionId = await waitForSessionChange(sessionIdBeforeAction)
-      const didSignIn = sessionIdBeforeAction === null && nextSessionId !== null
-
-      if (didSignIn) {
-        await waitForSignedInState()
-      }
+      console.log('[auth] sign-in modal resolved', {
+        sessionIdAfterModal: clerk.session?.id ?? null,
+        hasUserAfterModal: Boolean(clerk.user),
+        isSignedInAfterModal: clerk.isSignedIn
+      })
+      await clerk.load()
+      console.log('[auth] clerk reloaded after sign-in modal', {
+        sessionIdAfterReload: clerk.session?.id ?? null,
+        hasUserAfterReload: Boolean(clerk.user),
+        isSignedInAfterReload: clerk.isSignedIn
+      })
+      shouldReloadAfterSignIn = Boolean(clerk.session?.id && clerk.user)
+      console.log('[auth] post-sign-in reload decision', {
+        shouldReloadAfterSignIn
+      })
     }
   } catch (error) {
     console.error('Auth action failed', error)
   } finally {
     authActionInFlight = false
+
+    if (shouldReloadAfterSignIn) {
+      console.log('[auth] reloading page now')
+      window.location.reload()
+      return
+    }
+
+    console.log('[auth] rerendering without reload', {
+      sessionId: clerk.session?.id ?? null,
+      hasUser: Boolean(clerk.user)
+    })
     renderApp()
   }
 }
@@ -803,15 +803,42 @@ instantiateClerk()
     clerk = clerkInstance
     clerkReady = true
     lastSessionId = clerk.session?.id ?? null
+    console.log('[auth] clerk initialized', {
+      sessionId: lastSessionId,
+      hasUser: Boolean(clerk.user)
+    })
     clerk.addListener(() => {
       const nextSessionId = clerk?.session?.id ?? null
+      const hasSignedInUser = Boolean(clerk?.user)
+
+      console.log('[auth] clerk listener fired', {
+        lastSessionId,
+        nextSessionId,
+        hasSignedInUser,
+        authActionInFlight
+      })
 
       if (nextSessionId !== lastSessionId) {
         lastSessionId = nextSessionId
+        console.log('[auth] tracked new session id', {
+          lastSessionId
+        })
       }
 
-      renderApp()
+      if (nextSessionId === null || hasSignedInUser) {
+        console.log('[auth] listener rendering app', {
+          nextSessionId,
+          hasSignedInUser
+        })
+        renderApp()
+      } else {
+        console.log('[auth] listener skipped render until Clerk user is ready', {
+          nextSessionId,
+          hasSignedInUser
+        })
+      }
     })
+    console.log('[auth] initial clerk render')
     renderApp()
   })
   .catch(error => {
