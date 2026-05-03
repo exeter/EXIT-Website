@@ -1,16 +1,25 @@
 :root {
   --font-body: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-display: 'Righteous', system-ui, sans-serif;
 
-  --bg: #f7f7f5;
-  --bg-elevated: #fff;
-  --ink: #14120f;
-  --ink-muted: #3d3a36;
-  --ink-faint: #5c5854;
-  --border: #cfccc6;
+  --bg: #fcf8f1;
+  --bg-elevated: #ffffff;
+  --subtitle-rule-width: 2.75rem;
+  --content-max: min(68rem, 100%);
+  --ink: #1c1814;
+  --ink-muted: #454039;
+  --ink-faint: #5e574e;
+  --border: #b8a896;
+  --border-strong: #9a8b7a;
   --accent: #9d2235;
   --accent-hover: #7f1b2a;
-  --accent-soft: rgba(157, 34, 53, 0.07);
+  --accent-soft: rgba(157, 34, 53, 0.08);
+
+  --footer-bg: #ede6dc;
+  --footer-border: #a89886;
+  --footer-rule: rgba(28, 24, 20, 0.2);
+  --footer-link: #2c2822;
+  --footer-muted: #554d44;
 
   /* Spacing scale (1rem = root font) */
   --space-1: 0.35rem;
@@ -59,7 +68,8 @@ a:hover {
 
 .nav-link:focus-visible,
 .link-button:focus-visible,
-.button:focus-visible {
+.button:focus-visible,
+.footer-social-link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -81,14 +91,21 @@ ul {
   min-height: 100vh;
 }
 
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .page-shell {
   --pad-x: clamp(10px, 3.5vw, 36px);
   --pad-x-end: clamp(10px, 1.25vw, 20px);
 
   position: relative;
-  width: min(1120px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 28px));
   margin: 0 auto;
-  min-height: 100vh;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding: 0 var(--pad-x-end) 0 var(--pad-x);
@@ -147,7 +164,7 @@ ul {
   flex-wrap: nowrap;
   justify-content: flex-end;
   align-items: center;
-  gap: 12px;
+  gap: 8px 26px;
   flex: 1 1 auto;
   min-width: 0;
   overflow-x: auto;
@@ -169,6 +186,7 @@ ul {
 .nav-auth {
   flex: 0 0 auto;
   min-height: 38px;
+  margin-left: 6px;
   padding: 0 12px;
   font-size: 0.82rem;
   white-space: nowrap;
@@ -196,12 +214,12 @@ ul {
   margin-top: var(--space-8);
 }
 
-/* Offset main column rightward so the layout feels balanced on wide viewports */
+/* One reading column width for every route */
 .main-inner {
   width: 100%;
-  max-width: min(54rem, 100%);
-  margin-left: clamp(0.5rem, 5.5vw, 4.5rem);
-  margin-right: 0;
+  max-width: var(--content-max);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ——— Landing (home) ——— */
@@ -270,7 +288,7 @@ ul {
 .landing-hook {
   margin: var(--space-6) auto 0;
   max-width: 30rem;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(1.02rem, 2.1vw, 1.2rem);
   font-weight: 500;
   font-style: italic;
@@ -345,7 +363,7 @@ ul {
 /* ——— Inner pages ——— */
 .sheet-head {
   margin-bottom: var(--space-6);
-  max-width: 40rem;
+  max-width: var(--content-max);
 }
 
 .sheet-title {
@@ -355,6 +373,7 @@ ul {
   letter-spacing: -0.03em;
   line-height: 1.15;
   text-wrap: balance;
+  margin-bottom: var(--space-2);
 }
 
 .sheet-lede {
@@ -362,7 +381,7 @@ ul {
   color: var(--ink-muted);
   font-size: 0.98rem;
   line-height: 1.58;
-  max-width: 38rem;
+  max-width: none;
 }
 
 .sheet-body {
@@ -374,7 +393,6 @@ ul {
 
 .sheet-block {
   padding: var(--space-6) 0 var(--space-4);
-  border-top: 1px solid var(--border);
 }
 
 .sheet-tbd {
@@ -382,14 +400,6 @@ ul {
   font-size: 1.45rem;
   font-weight: 600;
   margin-bottom: var(--space-3);
-}
-
-.sheet-foot {
-  margin-top: var(--space-8);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--border);
-  font-size: 0.9rem;
-  color: var(--ink-muted);
 }
 
 .sheet-panel {
@@ -408,22 +418,34 @@ ul {
 
 /* ——— About page ——— */
 .about-page {
-  max-width: 52rem;
+  width: 100%;
+  max-width: none;
 }
 
 .about-hero {
   margin-bottom: var(--space-8);
   padding-bottom: var(--space-6);
-  border-bottom: 1px solid var(--border);
 }
 
 .about-hero-label {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.about-hero-label::after {
+  content: '';
+  display: block;
+  width: var(--subtitle-rule-width);
+  height: 2px;
+  margin-top: var(--space-2);
+  background: var(--border-strong);
 }
 
 .about-hero-title {
@@ -435,7 +457,7 @@ ul {
   font-size: 0.98rem;
   line-height: 1.58;
   color: var(--ink-muted);
-  max-width: 40rem;
+  max-width: none;
 }
 
 .about-hero-lede strong {
@@ -445,7 +467,6 @@ ul {
 
 .about-panel {
   padding: var(--space-6) 0 var(--space-6);
-  border-top: 1px solid var(--border);
 }
 
 .about-page > .about-panel:first-of-type {
@@ -466,7 +487,7 @@ ul {
   font-size: 0.94rem;
   line-height: 1.58;
   color: var(--ink-muted);
-  max-width: 40rem;
+  max-width: none;
 }
 
 .about-panel-text + .about-panel-text {
@@ -486,7 +507,7 @@ ul {
   font-size: 0.9rem;
   line-height: 1.55;
   color: var(--ink-muted);
-  max-width: 38rem;
+  max-width: none;
 }
 
 /* Director cards: flat boxes, no shadows */
@@ -529,12 +550,12 @@ ul {
 /* ——— Info / details article ——— */
 .info-article {
   display: block;
-  max-width: 52rem;
+  width: 100%;
+  max-width: none;
 }
 
 .info-section {
   padding: var(--space-6) 0;
-  border-top: 1px solid var(--border);
 }
 
 .info-article > .info-section:first-child {
@@ -543,12 +564,24 @@ ul {
 }
 
 .info-section-label {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.11em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.info-section-label::after {
+  content: '';
+  display: block;
+  width: var(--subtitle-rule-width);
+  height: 2px;
+  margin-top: var(--space-2);
+  background: var(--border-strong);
 }
 
 .info-section-title {
@@ -655,8 +688,8 @@ ul {
 }
 
 .register-form-panel {
-  width: min(420px, 100%);
-  margin: var(--space-4) 0 0;
+  width: min(34rem, 100%);
+  margin: var(--space-4) auto 0;
   padding-top: 2px;
 }
 
@@ -741,60 +774,156 @@ ul {
   font-size: 0.88rem;
 }
 
-/* ——— Site footer ——— */
+/* ——— Site footer (full viewport width) ——— */
 .site-footer {
-  margin-top: auto;
-  margin-left: calc(-1 * var(--pad-x));
-  margin-right: calc(-1 * var(--pad-x-end));
-  padding: var(--space-8) var(--pad-x-end) var(--space-6) var(--pad-x);
-  border-top: 1px solid var(--border);
-  background: var(--bg);
+  flex-shrink: 0;
+  width: 100%;
+  padding: var(--space-5) clamp(16px, 4vw, 40px) var(--space-4);
+  border-top: 1px solid var(--footer-border);
+  background: var(--footer-bg);
+  color: var(--footer-link);
+}
+
+.site-footer a {
+  color: var(--footer-link);
+}
+
+.site-footer a:hover {
+  color: var(--ink);
 }
 
 .site-footer-inner {
   display: grid;
-  gap: var(--space-4);
-  max-width: min(54rem, 100%);
-  margin-left: clamp(0.5rem, 5.5vw, 4.5rem);
+  gap: var(--space-3);
+  width: 100%;
+  max-width: min(1180px, 100%);
+  margin: 0 auto;
 }
 
-.site-footer-brand {
+.site-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: var(--space-5) var(--space-8);
+  align-items: start;
+}
+
+.site-footer-heading {
+  margin: 0 0 var(--space-3);
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--footer-muted);
+}
+
+.site-footer-heading::after {
+  content: '';
+  display: block;
+  width: var(--subtitle-rule-width);
+  height: 2px;
+  margin-top: var(--space-2);
+  background: var(--border-strong);
+}
+
+.site-footer-email-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+}
+
+.site-footer-email-icon {
+  display: flex;
+  color: var(--footer-muted);
+  flex-shrink: 0;
+}
+
+.site-footer-email {
+  font-size: 0.8rem;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.site-footer-social {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-3) var(--space-4);
-}
-
-.site-footer-mark {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--accent);
-}
-
-.site-footer-tagline {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--ink-muted);
-  letter-spacing: 0.02em;
-}
-
-.site-footer-contact {
+  gap: 14px;
+  align-items: center;
   margin: 0;
-  font-size: 0.88rem;
+  padding: 0;
+  list-style: none;
 }
 
-.site-footer-contact a {
-  font-weight: 600;
-}
-
-.site-footer-legal {
+.site-footer-social li {
   margin: 0;
-  max-width: 46rem;
+  padding: 0;
+}
+
+.footer-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.92;
+  text-decoration: none;
+}
+
+.footer-social-link:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+
+.footer-social-img {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.site-footer-col-aside {
+  text-align: right;
+}
+
+.site-footer-aside-title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--footer-link);
+}
+
+.site-footer-aside-text {
+  margin: 0;
   font-size: 0.72rem;
-  line-height: 1.5;
-  color: var(--ink-faint);
+  line-height: 1.45;
+  color: var(--footer-muted);
+}
+
+.site-footer-attrib {
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--footer-border);
+  font-size: 0.65rem;
+  line-height: 1.45;
+  text-align: center;
+  color: var(--footer-muted);
+}
+
+/* Righteous is a single display weight — avoid synthetic bold */
+:is(
+  .brand-copy strong,
+  .landing-name,
+  .sheet-title,
+  .sheet-tbd,
+  .sheet-panel-title,
+  .about-panel-title,
+  .director-card-name,
+  .info-section-title
+) {
+  font-weight: 400;
 }
 
 @media (max-width: 720px) {
@@ -803,18 +932,28 @@ ul {
   }
 
   .page-shell {
-    width: min(100% - 24px, 1120px);
+    width: min(100% - 24px, 1180px);
     --pad-x: clamp(10px, 3vw, 20px);
     --pad-x-end: clamp(10px, 3vw, 20px);
   }
 
   .main-inner {
-    margin-left: 0;
     max-width: 100%;
   }
 
   .site-footer-inner {
     margin-left: 0;
+  }
+
+  .site-footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .site-footer-col-aside {
+    text-align: left;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--footer-border);
   }
 
   .landing-hero {

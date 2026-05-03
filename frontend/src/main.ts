@@ -62,6 +62,42 @@ const eventSummary = {
 
 const contestContactEmail = 'exeterecc@gmail.com'
 
+/** Update hrefs to your real community channels. Icons load from simpleicons.org CDN. */
+const socialLinks: readonly { brand: string; label: string; href: string }[] = [
+  { brand: 'discord', label: 'Discord', href: 'https://discord.gg/' },
+  { brand: 'github', label: 'GitHub', href: 'https://github.com/ECC-Project-Group' },
+  { brand: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/' },
+  { brand: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/' }
+] as const
+
+const socialIconColor = '454039'
+
+function renderSocialLinksHtml(): string {
+  return socialLinks
+    .map(
+      item => `
+        <li>
+          <a
+            class="footer-social-link"
+            href="${escapeHtml(item.href)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="${escapeHtml(item.label)}"
+          >
+            <img
+              class="footer-social-img"
+              src="https://cdn.simpleicons.org/${escapeHtml(item.brand)}/${socialIconColor}"
+              alt=""
+              width="22"
+              height="22"
+              loading="lazy"
+            />
+          </a>
+        </li>`
+    )
+    .join('')
+}
+
 type HomeContentBlock =
   | { type: 'paragraph'; text: string }
   | { type: 'list'; items: readonly string[] }
@@ -173,8 +209,8 @@ const homeSections: readonly HomeSection[] = [
 
 const tournamentDirectors = [
   'Aaryan Patel',
-  'Gavin Zhou',
-  'Aaditya Bilikanti',
+  'Gavin Zhao',
+  'Aaditya Bilakanti',
   'Chris Spencer',
   'Ura Shi'
 ] as const
@@ -297,16 +333,30 @@ function renderSiteFooter(): string {
   return `
     <footer class="site-footer" role="contentinfo">
       <div class="site-footer-inner">
-        <div class="site-footer-brand">
-          <span class="site-footer-mark">${escapeHtml(eventSummary.shortName)}</span>
-          <span class="site-footer-tagline">${escapeHtml(eventSummary.name)}</span>
+        <div class="site-footer-grid">
+          <section class="site-footer-col" aria-labelledby="footer-contact-heading">
+            <h2 id="footer-contact-heading" class="site-footer-heading">Contact</h2>
+            <p class="site-footer-email-row">
+              <span class="site-footer-email-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.708 2.825L15 11.105V5.383zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741zM1 11.105l4.708-2.897L1 5.383v5.722z"/>
+                </svg>
+              </span>
+              <a class="site-footer-email" href="mailto:${escapeHtml(contestContactEmail)}">${escapeHtml(contestContactEmail)}</a>
+            </p>
+            <ul class="site-footer-social">
+              ${renderSocialLinksHtml()}
+            </ul>
+          </section>
+          <section class="site-footer-col site-footer-col-aside" aria-label="About EXIT">
+            <p class="site-footer-aside-title">${escapeHtml(eventSummary.name)}</p>
+            <p class="site-footer-aside-text">
+              ${escapeHtml(eventSummary.club)} · ${escapeHtml(eventSummary.location)}
+            </p>
+          </section>
         </div>
-        <p class="site-footer-contact">
-          <a href="mailto:${escapeHtml(contestContactEmail)}">${escapeHtml(contestContactEmail)}</a>
-        </p>
-        <p class="site-footer-legal">
-          © ${year} ${escapeHtml(eventSummary.club)} · Phillips Exeter Academy.
-          EXIT is a student-organized contest; logistics and policies follow organizer communications.
+        <p class="site-footer-attrib">
+          © ${year} ${escapeHtml(eventSummary.club)} · Phillips Exeter Academy. Student-organized contest.
         </p>
       </div>
     </footer>
@@ -387,10 +437,6 @@ function renderInfoPage(): string {
     <div class="info-article">
       ${renderHomeSections()}
     </div>
-    <footer class="sheet-foot">
-      Questions?
-      <a href="mailto:${escapeHtml(contestContactEmail)}">${escapeHtml(contestContactEmail)}</a>
-    </footer>
   `
 }
 
@@ -744,6 +790,7 @@ function renderApp() {
             : renderHomePage()
 
   app.innerHTML = `
+    <div class="app-root">
     <div class="page-shell">
       <header class="site-header">
         <a class="brand" href="#/" aria-label="EXIT contest page">
@@ -773,7 +820,8 @@ function renderApp() {
           ${page}
         </div>
       </main>
-      ${renderSiteFooter()}
+    </div>
+    ${renderSiteFooter()}
     </div>
   `
 
