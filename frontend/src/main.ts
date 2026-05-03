@@ -1,5 +1,5 @@
 import { Clerk } from '@clerk/clerk-js';
-import eccLogoUrl from '../ecc-logo.png'
+import exitLogoUrl from '../exit-logo.png'
 import './style.css'
 
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -794,7 +794,7 @@ function renderApp() {
     <div class="page-shell">
       <header class="site-header">
         <a class="brand" href="#/" aria-label="EXIT contest page">
-          <img class="brand-mark" src="${eccLogoUrl}" alt="Exeter Computing Club logo" />
+          <img class="brand-mark" src="${exitLogoUrl}" alt="EXIT" width="1024" height="1024" />
           <span class="brand-copy">
             <strong>${escapeHtml(eventSummary.name)}</strong>
             <span>${escapeHtml(eventSummary.club)}</span>

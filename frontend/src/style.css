@@ -145,9 +145,11 @@ ul {
 
 .brand-mark {
   display: block;
-  width: 48px;
-  height: auto;
+  height: clamp(44px, 11vw, 64px);
+  width: auto;
+  max-width: min(280px, 56vw);
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .brand-copy {
