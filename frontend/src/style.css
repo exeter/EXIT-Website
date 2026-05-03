@@ -710,6 +710,11 @@ ul {
   width: 100%;
 }
 
+.register-panel > .sheet-panel-title,
+.register-panel > .sheet-body {
+  text-align: center;
+}
+
 .register-form-panel {
   width: min(34rem, 100%);
   margin: var(--space-4) auto 0;
