@@ -12,11 +12,13 @@ function loadRegistrationModules() {
   if (!registrationModulesPromise) {
     registrationModulesPromise = Promise.all([
       import(getBackendModuleUrl('sheets.js')),
-      import(getBackendModuleUrl('validate.js'))
+      import(getBackendModuleUrl('validate.js')),
+      import(getBackendModuleUrl('email-resend.js'))
     ])
-      .then(([sheetsModule, validateModule]) => ({
+      .then(([sheetsModule, validateModule, emailModule]) => ({
         appendRegistrationRow: sheetsModule.appendRegistrationRow,
-        parseRegistrationInput: validateModule.parseRegistrationInput
+        parseRegistrationInput: validateModule.parseRegistrationInput,
+        sendConfirmationEmail: emailModule.sendConfirmationEmail
       }))
       .catch(error => {
         registrationModulesPromise = undefined
@@ -105,7 +107,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { appendRegistrationRow, parseRegistrationInput } = await loadRegistrationModules()
+    const { appendRegistrationRow, parseRegistrationInput, sendConfirmationEmail } = await loadRegistrationModules()
 
     const parsed = parseRegistrationInput(req.body)
     if (!parsed.ok) {
@@ -125,6 +127,7 @@ module.exports = async function handler(req, res) {
     }
 
     const sheetResult = await appendRegistrationRow(registration)
+    await sendConfirmationEmail(registration)
 
     return json(res, 200, {
       ok: true,
