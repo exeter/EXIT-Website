@@ -110,29 +110,54 @@ const homeSections: readonly HomeSection[] = [
   {
     label: 'Rules',
     paragraphs: [
-      {
-        html:
-          `EXIT follows standard competitive programming conduct, similar in spirit to major online judges, adapted for our hybrid format. 
-          <strong> AI assistance and external resources are strictly prohibited </strong> during the contest unless otherwise noted. 
-          Work alone during the individual round; during the team round, collaborate only with your registered teammates.`
-      },
-      {
-        html:
-          `Do not share live problem statements, solutions, or other sensitive contest material in public channels while the contest is running. 
-          <strong> Violations may lead to disqualification, and organizer rulings are final. </strong> Online participants should bring a reliable computer and internet connection and 
-          in-person participants should follow instructions from staff on site. Tie-breaking procedures and the full scoring rules will be published with the final rules packet.`
-      }
+      'EXIT follows standard competitive programming conduct, similar in spirit to major online judges, adapted for our hybrid format. Unless the final rules packet says otherwise, do not use AI assistants, code generators, or outside help. Work alone during the individual round; during the team round, collaborate only with your registered teammates. Do not share live problem statements, solutions, or other sensitive contest material in public channels while the contest is running. Violations may lead to disqualification, and organizer rulings are final. Online participants should bring a reliable computer and internet connection; in-person participants should follow instructions from staff on site. Tie-breaking procedures and the full scoring rules will be published with the final rules packet.'
     ]
   }
 ] as const
 
-const tournamentDirectors = [
-  { name: 'Aaryan Patel', classLabel: "Class of '27" },
-  { name: 'Gavin Zhao', classLabel: "Class of '28" },
-  { name: 'Aaditya Bilakanti', classLabel: "Class of '28" },
-  { name: 'Chris Spencer', classLabel: "Class of '27" },
-  { name: 'Ura Shi', classLabel: "Class of '28" }
+type TournamentDirector = {
+  name: string
+  role: string
+  classYear: string
+  imageSrc: string
+}
+
+/** Add photos as /public/directors/{slug}.jpg (e.g. aaryan-patel.jpg). */
+const tournamentDirectors: readonly TournamentDirector[] = [
+  {
+    name: 'Aaryan Patel',
+    role: 'Co-President',
+    classYear: "'27",
+    imageSrc: '/directors/aaryan-patel.jpg'
+  },
+  {
+    name: 'Chris Spencer',
+    role: 'Co-President',
+    classYear: "'27",
+    imageSrc: '/directors/chris-spencer.jpg'
+  },
+  {
+    name: 'Gavin Zhao',
+    role: 'Software Director',
+    classYear: "'28",
+    imageSrc: '/directors/gavin-zhao.jpg'
+  },
+  {
+    name: 'Aaditya Bilakanti',
+    role: 'Software Director',
+    classYear: "'28",
+    imageSrc: '/directors/aaditya-bilakanti.jpg'
+  },
+  {
+    name: 'Ura Shi',
+    role: 'Events Director',
+    classYear: "'28",
+    imageSrc: '/directors/ura-shi.jpg'
+  }
 ] as const
+
+/** Set to true once headshots are in /public/directors/. */
+const showDirectorPhotos = false
 
 const gradeOptions = ['4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
 const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Competitive'] as const
@@ -157,9 +182,6 @@ function escapeHtml(value: string): string {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
 }
-
-const aboutMission =
-  'Our mission is to make competitive programming accessible and exciting—through challenging problems, fair organization, and a contest day that welcomes every student.'
 
 function getRoute(): Route {
   const hash = window.location.hash.replace(/^#/, '')
@@ -299,14 +321,35 @@ function renderSiteFooter(): string {
   `
 }
 
+function renderDirectorPhoto(director: TournamentDirector): string {
+  if (!showDirectorPhotos) {
+    return ''
+  }
+
+  return `
+          <div class="director-card-photo">
+            <img
+              src="${escapeHtml(director.imageSrc)}"
+              alt="${escapeHtml(director.name)}"
+              width="320"
+              height="320"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>`
+}
+
 function renderDirectors(): string {
   const cards = tournamentDirectors
     .map(
       director => `
-        <div class="director-card">
-          <span class="director-card-name">${escapeHtml(director.name)}</span>
-          <span class="director-card-label">${escapeHtml(director.classLabel)}</span>
-        </div>`
+        <article class="director-card${showDirectorPhotos ? '' : ' director-card--text-only'}">
+          ${renderDirectorPhoto(director)}
+          <div class="director-card-meta">
+            <p class="director-card-name">${escapeHtml(director.name)} (${escapeHtml(director.classYear)})</p>
+            <p class="director-card-role">${escapeHtml(director.role)}</p>
+          </div>
+        </article>`
     )
     .join('')
   return `<div class="director-grid">${cards}</div>`
@@ -388,10 +431,9 @@ function renderAboutPage(): string {
     <div class="about-page">
       <header class="about-hero">
         <h1 class="sheet-title about-hero-title">About EXIT</h1>
-        <p class="about-hero-mission">${escapeHtml(aboutMission)}</p>
         <p class="about-hero-lede">
           EXIT is the Exeter Informatics Tournament, run by the <strong>Exeter Computing Club</strong> at Phillips Exeter
-          Academy. The club hosts USACO-style practice, builds, and hackathons for students at every level.
+          Academy. In addition to organizing EXIT, we participate in many competitions ourselves. At the 2025 MIT Informatics Tournament, the Exeter team placed 2nd amongst the strongest teams in the nation. Many members also earned medals at the USA AI Olympiad, going on to compete at the international level.
         </p>
       </header>
 

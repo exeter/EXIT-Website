@@ -11,7 +11,7 @@
   --ink-muted: #454039;
   --ink-faint: #5e574e;
   --border: #b8a896;
-  --border-strong: #674042;
+  --border-strong: #9a8b7a;
   --accent: #9d2235;
   --accent-hover: #7f1b2a;
   --accent-soft: rgba(157, 34, 53, 0.08);
@@ -392,7 +392,7 @@ ul {
 
 .sheet-title {
   font-family: var(--font-display);
-  font-size: clamp(1.55rem, 4vw, 2rem);
+  font-size: clamp(1.55rem, 3.5vw, 2rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.15;
@@ -480,17 +480,8 @@ ul {
   margin-top: 0;
 }
 
-.about-hero-mission {
-  margin-top: var(--space-4);
-  font-size: 1rem;
-  line-height: 1.58;
-  color: var(--ink);
-  font-weight: 600;
-  max-width: none;
-}
-
 .about-hero-lede {
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
   font-size: 0.98rem;
   line-height: 1.58;
   color: var(--ink-muted);
@@ -553,41 +544,78 @@ ul {
   max-width: none;
 }
 
-/* Director cards: flat boxes, no shadows */
+/* Director cards: optional photo, name + role in a bordered box */
 .director-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-4);
   margin-top: var(--space-5);
 }
 
 .director-card {
+  width: max-content;
+  max-width: 100%;
   border: 1px solid var(--border);
   border-radius: 2px;
   background: var(--bg-elevated);
-  padding: var(--space-4) var(--space-4) var(--space-3);
-  min-height: 4.75rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.director-card:has(.director-card-photo) {
+  width: min(200px, 100%);
+}
+
+.director-card-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--accent-soft);
+}
+
+.director-card-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.director-card-meta {
+  margin-top: var(--space-3);
+  padding: 0 var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.director-card--text-only .director-card-meta {
+  margin-top: 0;
+  padding: var(--space-3) var(--space-4);
 }
 
 .director-card-name {
+  margin: 0;
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.25;
   color: var(--ink);
+  white-space: nowrap;
 }
 
-.director-card-label {
-  display: block;
-  margin-top: var(--space-3);
-  font-size: 0.65rem;
+.director-card-role {
+  margin: 0;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--accent);
+  line-height: 1.35;
 }
 
 /* ——— Info / details article ——— */
@@ -598,7 +626,7 @@ ul {
 }
 
 .info-section {
-  padding: 3px 0;
+  padding: var(--space-6) 0;
 }
 
 .info-article > .info-section:first-child {
@@ -611,12 +639,12 @@ ul {
   width: fit-content;
   max-width: 100%;
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: var(--space-10) 0 var(--space-3);
+  margin: 0 0 var(--space-4);
   line-height: 1.2;
 }
 
@@ -642,12 +670,13 @@ ul {
 }
 
 .info-section-body strong {
-  color: var(--ink-strong);
+  color: var(--ink);
   font-weight: 700;
 }
 
-/* .page-shell uses its base --pad-x everywhere; no per-page override needed */
-/* .page-shell:has(.info-article) { --pad-x: clamp(6px, 1.5vw, 16px); } */
+.page-shell:has(.info-article) {
+  --pad-x: clamp(6px, 1.5vw, 16px);
+}
 
 .main-inner:has(.info-article) {
   max-width: 100%;
