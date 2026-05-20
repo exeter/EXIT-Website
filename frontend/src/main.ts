@@ -110,7 +110,18 @@ const homeSections: readonly HomeSection[] = [
   {
     label: 'Rules',
     paragraphs: [
-      'EXIT follows standard competitive programming conduct, similar in spirit to major online judges, adapted for our hybrid format. Unless the final rules packet says otherwise, do not use AI assistants, code generators, or outside help. Work alone during the individual round; during the team round, collaborate only with your registered teammates. Do not share live problem statements, solutions, or other sensitive contest material in public channels while the contest is running. Violations may lead to disqualification, and organizer rulings are final. Online participants should bring a reliable computer and internet connection; in-person participants should follow instructions from staff on site. Tie-breaking procedures and the full scoring rules will be published with the final rules packet.'
+      {
+        html:
+          `EXIT follows standard competitive programming conduct, similar in spirit to major online judges, adapted for our hybrid format. 
+          <strong> AI assistance and external resources are strictly prohibited </strong> during the contest unless otherwise noted. 
+          Work alone during the individual round; during the team round, collaborate only with your registered teammates.`
+      },
+      {
+        html:
+          `Do not share live problem statements, solutions, or other sensitive contest material in public channels while the contest is running. 
+          <strong> Violations may lead to disqualification, and organizer rulings are final. </strong> Online participants should bring a reliable computer and internet connection and 
+          in-person participants should follow instructions from staff on site. Tie-breaking procedures and the full scoring rules will be published with the final rules packet.`
+      }
     ]
   }
 ] as const

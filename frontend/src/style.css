@@ -7,10 +7,11 @@
   --subtitle-rule-width: 2.75rem;
   --content-max: min(68rem, 100%);
   --ink: #1c1814;
+  --ink-strong: #2c2822;
   --ink-muted: #454039;
   --ink-faint: #5e574e;
   --border: #b8a896;
-  --border-strong: #9a8b7a;
+  --border-strong: #674042;
   --accent: #9d2235;
   --accent-hover: #7f1b2a;
   --accent-soft: rgba(157, 34, 53, 0.08);
@@ -391,7 +392,7 @@ ul {
 
 .sheet-title {
   font-family: var(--font-display);
-  font-size: clamp(1.55rem, 3.5vw, 2rem);
+  font-size: clamp(1.55rem, 4vw, 2rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.15;
@@ -597,7 +598,7 @@ ul {
 }
 
 .info-section {
-  padding: var(--space-6) 0;
+  padding: 3px 0;
 }
 
 .info-article > .info-section:first-child {
@@ -610,12 +611,12 @@ ul {
   width: fit-content;
   max-width: 100%;
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 0 0 var(--space-4);
+  margin: var(--space-10) 0 var(--space-3);
   line-height: 1.2;
 }
 
@@ -624,8 +625,8 @@ ul {
   display: block;
   width: 14rem;
   height: 2px;
-  margin-top: var(--space-2);
-  background: #acc4cc;
+  margin-top: var(--space-1);
+  background: #A4BAB7;
 }
 
 .info-section-body {
@@ -641,13 +642,12 @@ ul {
 }
 
 .info-section-body strong {
-  color: var(--ink);
+  color: var(--ink-strong);
   font-weight: 700;
 }
 
-.page-shell:has(.info-article) {
-  --pad-x: clamp(6px, 1.5vw, 16px);
-}
+/* .page-shell uses its base --pad-x everywhere; no per-page override needed */
+/* .page-shell:has(.info-article) { --pad-x: clamp(6px, 1.5vw, 16px); } */
 
 .main-inner:has(.info-article) {
   max-width: 100%;
