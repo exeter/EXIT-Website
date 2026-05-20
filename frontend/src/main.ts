@@ -233,6 +233,15 @@ function getAuthRedirectUrl(): string {
   return `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`
 }
 
+/** Restore the saved route after sign-in redirect if the user is now signed in. */
+function restoreSavedRoute(): void {
+  const savedRoute = sessionStorage.getItem('exit_redirect_route')
+  if (savedRoute && savedRoute !== '/' && clerk?.user) {
+    window.location.hash = `#${savedRoute}`
+    sessionStorage.removeItem('exit_redirect_route')
+  }
+}
+
 function getSignedInEmail(): string | null {
   const primaryEmail = clerk?.user?.primaryEmailAddress?.emailAddress
   if (primaryEmail) {
@@ -271,17 +280,31 @@ async function performAuthAction() {
       })
             shouldReloadAfterAuth = true
     } else {
-      const redirectUrl = getAuthRedirectUrl()
 
-      console.log('[auth] redirecting to Clerk hosted sign-in', {
-        hasUser: Boolean(clerk.user),
-        redirectUrl
-      })
 
-      authActionInFlight = false
-      renderApp()
 
-      clerk.redirectToSignIn({ redirectUrl })
+
+
+
+
+
+
+
+
+      // Save the intended route so we can restore it after the OAuth redirect
+            sessionStorage.setItem('exit_redirect_route', getRoute())
+
+            const redirectUrl = getAuthRedirectUrl()
+
+            console.log('[auth] redirecting to Clerk hosted sign-in', {
+              hasUser: Boolean(clerk.user),
+              redirectUrl
+            })
+
+            authActionInFlight = false
+            renderApp()
+
+            clerk.redirectToSignIn({ redirectUrl })
       return
     }
   } catch (error) {
@@ -833,38 +856,45 @@ instantiateClerk()
     clerkReady = true
     lastSessionId = clerk.session?.id ?? null
     console.log('[auth] clerk initialized', {
-      sessionId: lastSessionId,
-      hasUser: Boolean(clerk.user)
-    })
-        clerk.addListener(() => {
-      const nextSessionId = clerk?.session?.id ?? null
-      const hasSignedInUser = Boolean(clerk?.user)
-
-      console.log('[auth] clerk listener fired', {
-        lastSessionId,
-        nextSessionId,
-        hasSignedInUser,
-        authActionInFlight
-      })
-
-      if (nextSessionId !== lastSessionId) {
-        lastSessionId = nextSessionId
-        console.log('[auth] tracked new session id', {
-          lastSessionId
+          sessionId: lastSessionId,
+          hasUser: Boolean(clerk.user)
         })
-      }
 
-      if (authActionInFlight && !hasSignedInUser) {
-        console.log('[auth] listener waiting for auth action to complete')
-        return
-      }
+        // Restore saved route if the user just completed sign-in
+        restoreSavedRoute()
 
-      console.log('[auth] listener rendering app', {
-        nextSessionId,
-        hasSignedInUser
-      })
-      renderApp()
-    })
+        clerk.addListener(() => {
+          const nextSessionId = clerk?.session?.id ?? null
+          const hasSignedInUser = Boolean(clerk?.user)
+
+          console.log('[auth] clerk listener fired', {
+            lastSessionId,
+            nextSessionId,
+            hasSignedInUser,
+            authActionInFlight
+          })
+
+          if (nextSessionId !== lastSessionId) {
+            lastSessionId = nextSessionId
+            console.log('[auth] tracked new session id', {
+              lastSessionId
+            })
+          }
+
+          if (authActionInFlight && !hasSignedInUser) {
+            console.log('[auth] listener waiting for auth action to complete')
+            return
+          }
+
+          console.log('[auth] listener rendering app', {
+            nextSessionId,
+            hasSignedInUser
+          })
+          renderApp()
+
+          // After rendering, restore saved route if user just signed in
+          restoreSavedRoute()
+        })
     console.log('[auth] initial clerk render')
     renderApp()
   })
