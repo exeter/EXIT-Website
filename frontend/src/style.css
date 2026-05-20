@@ -590,29 +590,45 @@ ul {
   display: block;
   width: fit-content;
   max-width: 100%;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: var(--space-3);
+  margin: 0 0 var(--space-4);
+  line-height: 1.2;
 }
 
 .info-section-label::after {
   content: '';
   display: block;
-  width: var(--subtitle-rule-width);
+  width: 14rem;
   height: 2px;
   margin-top: var(--space-2);
-  background: var(--border-strong);
+  background: #acc4cc;
 }
 
-.info-section-title {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: var(--space-3);
-  line-height: 1.22;
+.info-section-body {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  max-width: none;
+}
+
+.page-shell:has(.info-article) {
+  --pad-x: clamp(6px, 1.5vw, 16px);
+}
+
+.main-inner:has(.info-article) {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.main-inner:has(.info-article) .sheet-head {
+  max-width: 100%;
 }
 
 .punch,
@@ -952,7 +968,7 @@ ul {
   .sheet-panel-title,
   .about-panel-title,
   .director-card-name,
-  .info-section-title
+  .info-section-label
 ) {
   font-weight: 400;
 }

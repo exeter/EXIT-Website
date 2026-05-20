@@ -54,7 +54,7 @@ async function instantiateClerk() {
 const eventSummary = {
   name: 'Exeter Informatics Tournament',
   shortName: 'EXIT',
-  date: 'October 7, 2026',
+  date: 'Mid-October weekend, 2026',
   venue: 'Online and in person',
   location: 'Phillips Exeter Academy',
   club: 'Exeter Computing Club'
@@ -98,112 +98,26 @@ function renderSocialLinksHtml(): string {
     .join('')
 }
 
-type HomeContentBlock =
-  | { type: 'paragraph'; text: string }
-  | { type: 'list'; items: readonly string[] }
-
 type HomeSection = {
   label: string
-  title: string
-  blocks: readonly HomeContentBlock[]
+  body: string
 }
 
 const homeSections: readonly HomeSection[] = [
   {
-    label: 'General Information',
-    title: 'About EXIT',
-    blocks: [
-      {
-        type: 'paragraph',
-        text:
-          'The Exeter Informatics Tournament (EXIT) is an annual competitive programming contest for middle school and high school students. The event is offered both online and in person at Phillips Exeter Academy. The 2026 EXIT is on October 7, 2026.'
-      }
-    ]
+    label: 'Time and location',
+    body:
+      'EXIT 2026 takes place on a mid-October weekend; exact dates and session times will be posted before the event. You may compete in person at Phillips Exeter Academy or take part through the online component from anywhere.'
   },
   {
-    label: 'Eligibility',
-    title: 'Who may compete',
-    blocks: [
-      {
-        type: 'paragraph',
-        text:
-          'Students through twelfth grade may participate. Middle school students are especially welcome.'
-      }
-    ]
-  },
-  {
-    label: 'Teams',
-    title: 'Individual and team registration',
-    blocks: [
-      {
-        type: 'paragraph',
-        text:
-          'EXIT is structured around an individual round and a team round (see Format). Most students compete on a team of up to four. If a student does not have a team, a parent or coach may register them as an "individual."'
-      },
-      {
-        type: 'paragraph',
-        text:
-          'Individuals will be placed on a team before the contest—either with a registered team that has fewer than four students, or on a new team made up of other individuals. If you coach a team with fewer than four students and prefer not to have additional individuals assigned, contact us and we will do our best to accommodate you.'
-      }
-    ]
-  },
-  {
-    label: 'Format',
-    title: 'Rounds and problem style',
-    blocks: [
-      {
-        type: 'paragraph',
-        text:
-          'EXIT includes an individual round followed by a team round. Problem counts, time limits, and platform details for 2026 are still being finalized. Within each round, problems are generally ordered by increasing difficulty.'
-      },
-      {
-        type: 'paragraph',
-        text:
-          'Past materials and archives may be linked here as they become available. Final round specifications will be posted before contest day.'
-      }
-    ]
-  },
-  {
-    label: 'Scoring and Tie-Breaking',
-    title: 'How results are determined',
-    blocks: [
-      {
-        type: 'paragraph',
-        text:
-          'Exact point values and weights for 2026 are TBD. In general, an individual score will reflect performance on the individual round, and team sweepstakes will combine individual results with the team round. We will publish full scoring rules before the event.'
-      },
-      {
-        type: 'paragraph',
-        text:
-          'If ties occur, tie-breaking procedures will be announced with the final rules. Organizer decisions on scoring and ties are final.'
-      }
-    ]
+    label: 'Details',
+    body:
+      'The Exeter Informatics Tournament (EXIT) is an annual competitive programming contest organized by the Exeter Computing Club. Elementary, middle, and high school students may compete, and the tournament is open to participants worldwide. Problems follow a USACO-style format—algorithmic challenges that generally grow harder within each round. The contest includes an individual round, offered both online and in person, and a team round held in person only. Competitors register in a beginner or advanced division, each with its own awards (details to be announced). Final round lengths, problem counts, scoring, and platform information will be published before contest day.'
   },
   {
     label: 'Rules',
-    title: 'Contest conduct',
-    blocks: [
-      {
-        type: 'paragraph',
-        text:
-          'EXIT follows standard competitive programming expectations (similar in spirit to common online judges), adapted for our hybrid format. Highlights:'
-      },
-      {
-        type: 'list',
-        items: [
-          'No AI assistants, code generation tools, or outside help unless explicitly allowed in the final rules packet.',
-          'No collaboration during the individual round.',
-          'During the team round, work only with your registered teammates.',
-          'Do not share live problem statements, solutions, or sensitive contest details in public channels while the contest is running.',
-          'Any violation may lead to disqualification. Organizer rulings are final.'
-        ]
-      },
-      {
-        type: 'paragraph',
-        text:
-          'Bring a reliable computer and internet connection for online participation; in-person participants should follow on-site instructions from staff.'
-      }
-    ]
+    body:
+      'EXIT follows standard competitive programming conduct, similar in spirit to major online judges, adapted for our hybrid format. Unless the final rules packet says otherwise, do not use AI assistants, code generators, or outside help. Work alone during the individual round; during the team round, collaborate only with your registered teammates. Do not share live problem statements, solutions, or other sensitive contest material in public channels while the contest is running. Violations may lead to disqualification, and organizer rulings are final. Online participants should bring a reliable computer and internet connection; in-person participants should follow instructions from staff on site. Tie-breaking procedures and the full scoring rules will be published with the final rules packet.'
   }
 ] as const
 
@@ -377,20 +291,12 @@ function renderDirectors(): string {
 }
 
 function renderHomeSections(): string {
-  function blockHtml(block: HomeContentBlock): string {
-    if (block.type === 'paragraph') {
-      return `<p class="punch home-prose">${escapeHtml(block.text)}</p>`
-    }
-    return `<ul class="fact-list home-prose-list">${block.items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
-  }
-
   return homeSections
     .map(
       section => `
         <section class="info-section">
-          <p class="info-section-label">${escapeHtml(section.label)}</p>
-          <h2 class="info-section-title">${escapeHtml(section.title)}</h2>
-          ${section.blocks.map(blockHtml).join('')}
+          <h2 class="info-section-label">${escapeHtml(section.label)}</h2>
+          <p class="info-section-body">${escapeHtml(section.body)}</p>
         </section>`
     )
     .join('')
@@ -408,19 +314,18 @@ function renderHomePage(): string {
           <p class="landing-where">${escapeHtml(eventSummary.location)}</p>
         </div>
         <p class="landing-hook">
-          One day of problems, teamwork, and momentum—built for curious coders who like a real challenge.
+          USACO-style competitive programming for students worldwide.
         </p>
         <p class="landing-lead">
-          Middle and high school students compete in an individual round and a team round, online or on campus, run by students at Phillips Exeter Academy.
+          Beginner and advanced divisions. Individual round online or on campus; team round in person.
         </p>
       </div>
       <div class="landing-actions">
         <a class="link-button link-button-primary" href="#/register">Register</a>
-        <a class="link-button link-button-quiet" href="#/info">How it works</a>
+        <a class="link-button link-button-quiet" href="#/info">Contest details</a>
       </div>
       <p class="landing-contact">
-        Questions? Contact information is on the
-        <a href="#/info">Contest details</a> page and in the site footer.
+        Questions? See <a href="#/info">Contest details</a> or the footer.
       </p>
     </div>
   `
