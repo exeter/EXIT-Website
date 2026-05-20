@@ -124,17 +124,17 @@ type TournamentDirector = {
 
 /** Add photos as /public/directors/{slug}.jpg (e.g. aaryan-patel.jpg). */
 const tournamentDirectors: readonly TournamentDirector[] = [
+    {
+    name: 'Chris Spencer',
+    role: 'Co-President',
+    classYear: "'27",
+    imageSrc: '/directors/chris-spencer.jpg'
+  },
   {
     name: 'Aaryan Patel',
     role: 'Co-President',
     classYear: "'27",
     imageSrc: '/directors/aaryan-patel.jpg'
-  },
-  {
-    name: 'Chris Spencer',
-    role: 'Co-President',
-    classYear: "'27",
-    imageSrc: '/directors/chris-spencer.jpg'
   },
   {
     name: 'Gavin Zhao',
@@ -341,16 +341,19 @@ function renderDirectorPhoto(director: TournamentDirector): string {
 
 function renderDirectors(): string {
   const cards = tournamentDirectors
-    .map(
-      director => `
-        <article class="director-card${showDirectorPhotos ? '' : ' director-card--no-photo'}">
+    .map((director, index) => {
+      // Insert a flex break after the first two directors so Chris & Aaryan
+      // occupy the first row and the remaining three wrap onto the second row.
+      const breakAfter = index === 1 ? '<div class="director-break"></div>' : ''
+      return `
+        <article class="director-card${showDirectorPhotos ? '' : ' director-card--text-only'}">
           ${renderDirectorPhoto(director)}
           <div class="director-card-meta">
             <p class="director-card-name">${escapeHtml(director.name)} <span class="director-card-year">(${escapeHtml(director.classYear)})</span></p>
             <p class="director-card-role">${escapeHtml(director.role)}</p>
           </div>
-        </article>`
-    )
+        </article>${breakAfter}`
+    })
     .join('')
   return `<div class="director-grid">${cards}</div>`
 }

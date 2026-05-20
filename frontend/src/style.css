@@ -7,7 +7,7 @@
   --subtitle-rule-width: 2.75rem;
   --content-max: min(68rem, 100%);
   --ink: #1c1814;
-  --ink-strong: #622626;
+  --ink-strong: #481c1c;
   --ink-muted: #454039;
   --ink-faint: #5e574e;
   --border: #b8a896;
@@ -392,7 +392,7 @@ ul {
 
 .sheet-title {
   font-family: var(--font-display);
-  font-size: clamp(1.55rem, 3.5vw, 2rem);
+  font-size: clamp(1.55rem, 4vw, 2rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.15;
@@ -546,16 +546,38 @@ ul {
 
 /* Director cards: rounded photo, name and role below (no outer box) */
 .director-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-  gap: var(--space-5);
-  margin-top: var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  width: 100%;
 }
 
 .director-card {
+  height: 70px;
+  width: 250px;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg-elevated);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  overflow: hidden;
+  margin: 0 var(--space-2)
+}
+
+.director-card:has(.director-card-photo) {
+  width: 200px;
+  max-width: 100%;
+}
+
+.director-break {
+  flex-basis: 100%;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 .director-card-photo {
@@ -621,7 +643,7 @@ ul {
 }
 
 .info-section {
-  padding: var(--space-6) 0;
+  padding: .5rem 0;
 }
 
 .info-article > .info-section:first-child {
@@ -634,12 +656,12 @@ ul {
   width: fit-content;
   max-width: 100%;
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 0 0 var(--space-4);
+  margin: 2.5rem 0 var(--space-3) 0;
   line-height: 1.2;
 }
 
@@ -665,13 +687,13 @@ ul {
 }
 
 .info-section-body strong {
-  color: var(--ink);
+  color: var(--ink-strong);
   font-weight: 700;
 }
 
-.page-shell:has(.info-article) {
+/* .page-shell:has(.info-article) {
   --pad-x: clamp(6px, 1.5vw, 16px);
-}
+} */
 
 .main-inner:has(.info-article) {
   max-width: 100%;
@@ -1105,7 +1127,18 @@ ul {
   }
 
   .director-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .director-break {
+    display: none;
+  }
+
+  .director-card {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 280px;
   }
 
   .nav-link {
