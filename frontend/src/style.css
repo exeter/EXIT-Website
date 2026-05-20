@@ -450,8 +450,8 @@ ul {
 }
 
 .about-hero {
-  margin-bottom: var(--space-8);
-  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
 }
 
 .about-hero-label {
@@ -479,8 +479,17 @@ ul {
   margin-top: 0;
 }
 
-.about-hero-lede {
+.about-hero-mission {
   margin-top: var(--space-4);
+  font-size: 1rem;
+  line-height: 1.58;
+  color: var(--ink);
+  font-weight: 600;
+  max-width: none;
+}
+
+.about-hero-lede {
+  margin-top: var(--space-3);
   font-size: 0.98rem;
   line-height: 1.58;
   color: var(--ink-muted);
@@ -522,7 +531,7 @@ ul {
 }
 
 .about-panel-directors {
-  padding-top: var(--space-6);
+  padding-top: var(--space-3);
 }
 
 .about-panel-directors .about-panel-title {
@@ -629,6 +638,11 @@ ul {
 
 .info-section-body + .info-section-body {
   margin-top: var(--space-4);
+}
+
+.info-section-body strong {
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .page-shell:has(.info-article) {

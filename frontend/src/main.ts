@@ -34,8 +34,8 @@ async function instantiateClerk() {
 const eventSummary = {
   name: 'Exeter Informatics Tournament',
   shortName: 'EXIT',
-  date: 'Mid-October weekend, 2026',
-  venue: 'Online and in person',
+  date: 'Mid-October, 2026',
+  venue: 'Online and In-Person',
   location: 'Phillips Exeter Academy',
   club: 'Exeter Computing Club'
 } as const
@@ -77,23 +77,34 @@ function renderSocialLinksHtml(): string {
     .join('')
 }
 
+type InfoParagraph = string | { html: string }
+
 type HomeSection = {
   label: string
-  paragraphs: readonly string[]
+  paragraphs: readonly InfoParagraph[]
 }
 
 const homeSections: readonly HomeSection[] = [
   {
     label: 'Time and location',
     paragraphs: [
-      'The Exeter Informatics Tournament will take place in mid October on a weekend. Exact dates and times will be announced closer to the event. Participants may compete in person at Phillips Exeter Academy or take part through the online component from anywhere.'
+      {
+        html:
+          'The Exeter Informatics Tournament will take place in <strong>mid October</strong> on a weekend. Exact dates and times will be announced closer to the event. Participants may compete in person at Phillips Exeter Academy or take part through the online component from anywhere.'
+      }
     ]
   },
   {
     label: 'Format',
     paragraphs: [
-      'For in-person competitors, there will be two rounds: individual and team (up to 5 people per team). You will be able to register your team closer to the contest, and for those without a team that want one, you can find teammates on-site. For virtual competitors, there will only be an individual round.',
-      'Both rounds will be split into beginner and advanced divisions, and participants are free to select their division. Anyone in middle or high school is eligible to compete in EXIT. Prize money will be prioritized for in-person and advanced divisions (prize details TBD).'
+      {
+        html:
+          'For in-person competitors, there will be two rounds: <strong>individual and team</strong> (up to <strong>5</strong> people per team). You will be able to register your team closer to the contest, and for those without a team that want one, you can find teammates on-site. For virtual competitors, there will only be an individual round.'
+      },
+      {
+        html:
+          'Both rounds will be split into <strong>beginner and advanced</strong> divisions, and participants are free to select their division. Anyone in <strong>middle or high school</strong> is eligible to compete in EXIT. Prize money will be prioritized for in-person and advanced divisions (prize details TBD).'
+      }
     ]
   },
   {
@@ -135,6 +146,9 @@ function escapeHtml(value: string): string {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
 }
+
+const aboutMission =
+  'Our mission is to make competitive programming accessible and exciting—through challenging problems, fair organization, and a contest day that welcomes every student.'
 
 function getRoute(): Route {
   const hash = window.location.hash.replace(/^#/, '')
@@ -287,15 +301,18 @@ function renderDirectors(): string {
   return `<div class="director-grid">${cards}</div>`
 }
 
+function renderInfoParagraph(paragraph: InfoParagraph): string {
+  const content = typeof paragraph === 'string' ? escapeHtml(paragraph) : paragraph.html
+  return `<p class="info-section-body">${content}</p>`
+}
+
 function renderHomeSections(): string {
   return homeSections
     .map(
       section => `
         <section class="info-section">
           <h2 class="info-section-label">${escapeHtml(section.label)}</h2>
-          ${section.paragraphs
-            .map(text => `<p class="info-section-body">${escapeHtml(text)}</p>`)
-            .join('')}
+          ${section.paragraphs.map(renderInfoParagraph).join('')}
         </section>`
     )
     .join('')
@@ -359,8 +376,8 @@ function renderAboutPage(): string {
   return `
     <div class="about-page">
       <header class="about-hero">
-        <p class="about-hero-label">Phillips Exeter Academy</p>
         <h1 class="sheet-title about-hero-title">About EXIT</h1>
+        <p class="about-hero-mission">${escapeHtml(aboutMission)}</p>
         <p class="about-hero-lede">
           EXIT is the Exeter Informatics Tournament, run by the <strong>Exeter Computing Club</strong> at Phillips Exeter
           Academy. The club hosts USACO-style practice, builds, and hackathons for students at every level.
