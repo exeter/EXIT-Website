@@ -7,7 +7,7 @@
   --subtitle-rule-width: 2.75rem;
   --content-max: min(68rem, 100%);
   --ink: #1c1814;
-  --ink-strong: #2c2822;
+  --ink-strong: #622626;
   --ink-muted: #454039;
   --ink-faint: #5e574e;
   --border: #b8a896;
@@ -626,7 +626,7 @@ ul {
   width: 14rem;
   height: 2px;
   margin-top: var(--space-1);
-  background: #A4BAB7;
+  background: #a4b2b0;
 }
 
 .info-section-body {
