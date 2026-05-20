@@ -543,28 +543,18 @@ ul {
   max-width: none;
 }
 
-/* Director cards: optional photo, name + role in a bordered box */
+/* Director cards: rounded photo, name and role below (no outer box) */
 .director-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: var(--space-5);
   margin-top: var(--space-5);
 }
 
 .director-card {
-  width: max-content;
-  max-width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  background: var(--bg-elevated);
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  overflow: hidden;
-}
-
-.director-card:has(.director-card-photo) {
-  width: min(200px, 100%);
+  align-items: center;
 }
 
 .director-card-photo {
@@ -585,16 +575,14 @@ ul {
 
 .director-card-meta {
   margin-top: var(--space-3);
-  padding: 0 var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
   text-align: center;
 }
 
-.director-card--text-only .director-card-meta {
+.director-card--no-photo .director-card-meta {
   margin-top: 0;
-  padding: var(--space-3) var(--space-4);
 }
 
 .director-card-name {
@@ -605,6 +593,13 @@ ul {
   line-height: 1.25;
   color: var(--ink);
   white-space: nowrap;
+}
+
+.director-card-year {
+  font-family: var(--font-body);
+  font-size: 0.92em;
+  font-weight: 500;
+  color: var(--ink-muted);
 }
 
 .director-card-role {

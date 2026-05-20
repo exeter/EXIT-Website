@@ -156,7 +156,7 @@ const tournamentDirectors: readonly TournamentDirector[] = [
   }
 ] as const
 
-/** Set to true once headshots are in /public/directors/. */
+/** Set to true when headshots are in /public/directors/. */
 const showDirectorPhotos = false
 
 const gradeOptions = ['4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
@@ -343,10 +343,10 @@ function renderDirectors(): string {
   const cards = tournamentDirectors
     .map(
       director => `
-        <article class="director-card${showDirectorPhotos ? '' : ' director-card--text-only'}">
+        <article class="director-card${showDirectorPhotos ? '' : ' director-card--no-photo'}">
           ${renderDirectorPhoto(director)}
           <div class="director-card-meta">
-            <p class="director-card-name">${escapeHtml(director.name)} (${escapeHtml(director.classYear)})</p>
+            <p class="director-card-name">${escapeHtml(director.name)} <span class="director-card-year">(${escapeHtml(director.classYear)})</span></p>
             <p class="director-card-role">${escapeHtml(director.role)}</p>
           </div>
         </article>`
