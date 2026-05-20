@@ -767,6 +767,11 @@ ul {
   margin-top: 10px;
 }
 
+.register-form-panel .actions {
+  display: flex;
+  justify-content: center;
+}
+
 .register-submit {
   width: 100%;
 }
