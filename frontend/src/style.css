@@ -407,6 +407,10 @@ ul {
   max-width: none;
 }
 
+.sheet-head .sheet-lede + .sheet-body {
+  margin-top: var(--space-3);
+}
+
 .sheet-body {
   margin: 0;
   color: var(--ink-muted);
@@ -521,6 +525,12 @@ ul {
   padding-top: var(--space-6);
 }
 
+.about-panel-directors .about-panel-title {
+  font-size: 1.75rem;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-5);
+}
+
 .about-directors-head {
   margin-bottom: var(--space-2);
 }
@@ -615,6 +625,10 @@ ul {
   font-size: 0.98rem;
   line-height: 1.65;
   max-width: none;
+}
+
+.info-section-body + .info-section-body {
+  margin-top: var(--space-4);
 }
 
 .page-shell:has(.info-article) {

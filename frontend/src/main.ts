@@ -44,10 +44,9 @@ const contestContactEmail = 'exeterecc@gmail.com'
 
 /** Update hrefs to your real community channels. Icons load from simpleicons.org CDN. */
 const socialLinks: readonly { brand: string; label: string; href: string }[] = [
-  { brand: 'discord', label: 'Discord', href: 'https://discord.gg/' },
+  { brand: 'discord', label: 'Discord', href: 'https://discord.gg/4UKwwuHG' },
   { brand: 'github', label: 'GitHub', href: 'https://github.com/ECC-Project-Group' },
-  { brand: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/peacomputingclub/' },
-  { brand: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/' }
+  { brand: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/peacomputingclub/' }
 ] as const
 
 const socialIconColor = '454039'
@@ -80,33 +79,37 @@ function renderSocialLinksHtml(): string {
 
 type HomeSection = {
   label: string
-  body: string
+  paragraphs: readonly string[]
 }
 
 const homeSections: readonly HomeSection[] = [
   {
     label: 'Time and location',
-    body:
-      'EXIT 2026 takes place on a mid-October weekend; exact dates and session times will be posted before the event. You may compete in person at Phillips Exeter Academy or take part through the online component from anywhere.'
+    paragraphs: [
+      'The Exeter Informatics Tournament will take place in mid October on a weekend. Exact dates and times will be announced closer to the event. Participants may compete in person at Phillips Exeter Academy or take part through the online component from anywhere.'
+    ]
   },
   {
-    label: 'Details',
-    body:
-      'The Exeter Informatics Tournament (EXIT) is an annual competitive programming contest organized by the Exeter Computing Club. Elementary, middle, and high school students may compete, and the tournament is open to participants worldwide. Problems follow a USACO-style format—algorithmic challenges that generally grow harder within each round. The contest includes an individual round, offered both online and in person, and a team round held in person only. Competitors register in a beginner or advanced division, each with its own awards (details to be announced). Final round lengths, problem counts, scoring, and platform information will be published before contest day.'
+    label: 'Format',
+    paragraphs: [
+      'For in-person competitors, there will be two rounds: individual and team (up to 5 people per team). You will be able to register your team closer to the contest, and for those without a team that want one, you can find teammates on-site. For virtual competitors, there will only be an individual round.',
+      'Both rounds will be split into beginner and advanced divisions, and participants are free to select their division. Anyone in middle or high school is eligible to compete in EXIT. Prize money will be prioritized for in-person and advanced divisions (prize details TBD).'
+    ]
   },
   {
     label: 'Rules',
-    body:
+    paragraphs: [
       'EXIT follows standard competitive programming conduct, similar in spirit to major online judges, adapted for our hybrid format. Unless the final rules packet says otherwise, do not use AI assistants, code generators, or outside help. Work alone during the individual round; during the team round, collaborate only with your registered teammates. Do not share live problem statements, solutions, or other sensitive contest material in public channels while the contest is running. Violations may lead to disqualification, and organizer rulings are final. Online participants should bring a reliable computer and internet connection; in-person participants should follow instructions from staff on site. Tie-breaking procedures and the full scoring rules will be published with the final rules packet.'
+    ]
   }
 ] as const
 
 const tournamentDirectors = [
-  'Aaryan Patel',
-  'Gavin Zhao',
-  'Aaditya Bilakanti',
-  'Chris Spencer',
-  'Ura Shi'
+  { name: 'Aaryan Patel', classLabel: "Class of '27" },
+  { name: 'Gavin Zhao', classLabel: "Class of '28" },
+  { name: 'Aaditya Bilakanti', classLabel: "Class of '28" },
+  { name: 'Chris Spencer', classLabel: "Class of '27" },
+  { name: 'Ura Shi', classLabel: "Class of '28" }
 ] as const
 
 const gradeOptions = ['4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
@@ -195,16 +198,6 @@ async function performAuthAction() {
             shouldReloadAfterAuth = true
     } else {
 
-
-
-
-
-
-
-
-
-
-
       // Save the intended route so we can restore it after the OAuth redirect
             sessionStorage.setItem('exit_redirect_route', getRoute())
 
@@ -284,10 +277,10 @@ function renderSiteFooter(): string {
 function renderDirectors(): string {
   const cards = tournamentDirectors
     .map(
-      name => `
+      director => `
         <div class="director-card">
-          <span class="director-card-name">${escapeHtml(name)}</span>
-          <span class="director-card-label">Tournament director</span>
+          <span class="director-card-name">${escapeHtml(director.name)}</span>
+          <span class="director-card-label">${escapeHtml(director.classLabel)}</span>
         </div>`
     )
     .join('')
@@ -300,7 +293,9 @@ function renderHomeSections(): string {
       section => `
         <section class="info-section">
           <h2 class="info-section-label">${escapeHtml(section.label)}</h2>
-          <p class="info-section-body">${escapeHtml(section.body)}</p>
+          ${section.paragraphs
+            .map(text => `<p class="info-section-body">${escapeHtml(text)}</p>`)
+            .join('')}
         </section>`
     )
     .join('')
@@ -328,9 +323,6 @@ function renderHomePage(): string {
         <a class="link-button link-button-primary" href="#/register">Register</a>
         <a class="link-button link-button-quiet" href="#/info">Contest details</a>
       </div>
-      <p class="landing-contact">
-        Questions? See <a href="#/info">Contest details</a> or the footer.
-      </p>
     </div>
   `
 }
@@ -356,14 +348,10 @@ function renderSchedulePage(): string {
       <p class="sheet-lede">
         Times and sessions will be posted closer to the event.
       </p>
-    </header>
-    <div class="sheet-block" aria-label="Schedule status">
-      <p class="sheet-tbd">TBD</p>
       <p class="sheet-body">
-        Check-in, rounds, breaks, and awards are not finalized yet. Watch this page for updates, or use the contact in
-        the site footer.
+        Check-in, rounds, breaks, and awards are not finalized yet. Watch this page for updates!
       </p>
-    </div>
+    </header>
   `
 }
 
@@ -374,34 +362,13 @@ function renderAboutPage(): string {
         <p class="about-hero-label">Phillips Exeter Academy</p>
         <h1 class="sheet-title about-hero-title">About EXIT</h1>
         <p class="about-hero-lede">
-          EXIT is the Exeter Informatics Tournament—a competitive programming event run by the
-          <strong>Exeter Computing Club</strong>. We care about clear rules, fair judging, and a contest day that feels
-          organized and welcoming for every team.
+          EXIT is the Exeter Informatics Tournament, run by the <strong>Exeter Computing Club</strong> at Phillips Exeter
+          Academy. The club hosts USACO-style practice, builds, and hackathons for students at every level.
         </p>
       </header>
 
-      <section class="about-panel" aria-labelledby="about-club-heading">
-        <h2 id="about-club-heading" class="about-panel-title">The club behind the contest</h2>
-        <p class="about-panel-text">
-          The Exeter Computing Club is PEA's hub for CS: machine learning reading groups, USACO-style practice,
-          weekend builds, and hackathon crews. Whether you are new to code or already shipping projects, there is a seat
-          at the table.
-        </p>
-        <p class="about-panel-text">
-          Club members also ship tools for campus—see
-          <a href="https://exetercoursemap.vercel.app/" target="_blank" rel="noopener noreferrer">Exeter Course Map</a>
-          for 450+ courses, prerequisites, and planning paths through the curriculum.
-        </p>
-      </section>
-
       <section class="about-panel about-panel-directors" aria-labelledby="about-directors-heading">
-        <div class="about-directors-head">
-          <h2 id="about-directors-heading" class="about-panel-title">Tournament directors</h2>
-          <p class="about-directors-sub">
-            Organizing EXIT ${escapeHtml(eventSummary.date)}. For questions, see the
-            <a href="#/info">Contest details</a> page or the site footer.
-          </p>
-        </div>
+        <h2 id="about-directors-heading" class="about-panel-title">Tournament directors</h2>
         ${renderDirectors()}
       </section>
     </div>
@@ -711,7 +678,7 @@ function renderApp() {
         </a>
         <nav class="site-nav" aria-label="Primary">
           ${navLink('/', 'Home', currentRoute)}
-          ${navLink('/info', 'Details', currentRoute)}
+          ${navLink('/info', 'Format', currentRoute)}
           ${navLink('/schedule', 'Schedule', currentRoute)}
           ${navLink('/about', 'About', currentRoute)}
           ${navLink('/register', 'Register', currentRoute)}
