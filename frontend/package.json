@@ -21,7 +21,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@chenglou/pretext": "^0.0.3",
+    "@chenglou/pretext": "^0.0.7",
     "@clerk/clerk-js": "^6.6.0"
   },
   "devDependencies": {
