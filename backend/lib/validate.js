@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const gradeOptions = ['6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other']
-const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Competitive']
+const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced']
 const eventInterestOptions = ['In person', 'Virtual', 'Both']
 
 const registrationSchema = z

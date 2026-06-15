@@ -100,7 +100,7 @@ const homeSections: readonly HomeSection[] = [
     paragraphs: [
       {
         html:
-          'For in-person competitors, there will be two rounds: <strong>individual and team</strong> (up to <strong>5</strong> people per team). You will be able to register your team closer to the contest, and for those without a team that want one, you can find teammates on-site. For virtual competitors, there will only be an individual round.'
+          'For in-person competitors, there will be two rounds: <strong>individual and team</strong> (up to <strong>5</strong> people per team). You will be able to register your team closer to the contest, and for those without a team that want one, can find teammates on-site. For virtual competitors, there will only be an individual round.'
       },
       {
         html:
@@ -161,7 +161,11 @@ const tournamentDirectors: readonly TournamentDirector[] = [
 const showDirectorPhotos = false
 
 const gradeOptions = ['4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
-const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Competitive'] as const
+const backgroundLevelOptions = [
+  { value: 'Beginner', label: 'Beginner — just starting out' },
+  { value: 'Intermediate', label: 'Intermediate — USACO bronze–silver' },
+  { value: 'Advanced', label: 'Advanced — USACO gold–plat' }
+] as const
 const eventInterestOptions = ['In person', 'Virtual', 'Both'] as const
 
 const appRoot = document.querySelector<HTMLDivElement>('#app')
@@ -532,7 +536,7 @@ function renderRegisterPage(): string {
               <div class="field-wrap">
                 <select class="field" name="backgroundLevel" required>
                   <option value="">Background Level *</option>
-                  ${backgroundLevelOptions.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
+                  ${backgroundLevelOptions.map(option => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join('')}
                 </select>
                 <p class="error-msg" data-error-for="backgroundLevel"></p>
               </div>
