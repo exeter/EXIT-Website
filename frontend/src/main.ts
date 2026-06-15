@@ -15,6 +15,7 @@ type RegistrationPayload = {
   cityStateCountry: string
   grade: string
   backgroundLevel: string
+  eventInterest: string
   honeypot: string
 }
 
@@ -161,6 +162,7 @@ const showDirectorPhotos = false
 
 const gradeOptions = ['4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
 const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Competitive'] as const
+const eventInterestOptions = ['In person', 'Virtual', 'Both'] as const
 
 const appRoot = document.querySelector<HTMLDivElement>('#app')
 
@@ -505,7 +507,7 @@ function renderRegisterPage(): string {
               </div>
 
               <div class="field-wrap">
-                <input class="field" type="tel" name="phoneNumber" placeholder="Phone Number *" autocomplete="tel" required />
+                <input class="field" type="tel" name="phoneNumber" placeholder="Phone Number" autocomplete="tel" />
                 <p class="error-msg" data-error-for="phoneNumber"></p>
               </div>
 
@@ -533,6 +535,14 @@ function renderRegisterPage(): string {
                   ${backgroundLevelOptions.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
                 </select>
                 <p class="error-msg" data-error-for="backgroundLevel"></p>
+              </div>
+
+              <div class="field-wrap">
+                <select class="field" name="eventInterest" required>
+                  <option value="">Event interest *</option>
+                  ${eventInterestOptions.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
+                </select>
+                <p class="error-msg" data-error-for="eventInterest"></p>
               </div>
 
               <input type="text" name="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" hidden />
@@ -566,9 +576,7 @@ function validateRegistration(payload: RegistrationPayload): Partial<Record<Regi
     errors.lastName = 'Last name is required.'
   }
 
-  if (!payload.phoneNumber.trim()) {
-    errors.phoneNumber = 'Phone number is required.'
-  } else if (payload.phoneNumber.replace(/\D/g, '').length < 10) {
+  if (payload.phoneNumber.trim() && payload.phoneNumber.replace(/\D/g, '').length < 10) {
     errors.phoneNumber = 'Enter a valid phone number.'
   }
 
@@ -586,6 +594,10 @@ function validateRegistration(payload: RegistrationPayload): Partial<Record<Regi
 
   if (!payload.backgroundLevel.trim()) {
     errors.backgroundLevel = 'Background level is required.'
+  }
+
+  if (!payload.eventInterest.trim()) {
+    errors.eventInterest = 'Event interest is required.'
   }
 
   return errors
@@ -609,7 +621,8 @@ function setupRegisterForm() {
     'school',
     'cityStateCountry',
     'grade',
-    'backgroundLevel'
+    'backgroundLevel',
+    'eventInterest'
   ]
 
   function setFieldError(name: RegisterFieldName, message?: string) {
@@ -655,6 +668,7 @@ function setupRegisterForm() {
       cityStateCountry: String(formData.get('cityStateCountry') ?? '').trim(),
       grade: String(formData.get('grade') ?? '').trim(),
       backgroundLevel: String(formData.get('backgroundLevel') ?? '').trim(),
+      eventInterest: String(formData.get('eventInterest') ?? '').trim(),
       honeypot: String(formData.get('honeypot') ?? '')
     }
 

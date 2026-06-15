@@ -27,6 +27,7 @@ export async function sendConfirmationEmail(registration) {
     `Location: ${registration.cityStateCountry}`,
     `Grade: ${registration.grade}`,
     `Background Level: ${registration.backgroundLevel}`,
+    `Event Interest: ${registration.eventInterest}`,
     'Our team will review your registration and follow up if needed.',
     '',
     'Thank you,',
@@ -38,7 +39,7 @@ export async function sendConfirmationEmail(registration) {
     to: registration.email,
     subject,
     text,
-    html: `<p>Hi ${fullName},</p><p>We received your EXIT coach registration submission.</p><p><strong>School:</strong> ${registration.school}<br/><strong>Location:</strong> ${registration.cityStateCountry}<br/><strong>Grade:</strong> ${registration.grade}<br/><strong>Background Level:</strong> ${registration.backgroundLevel}</p><p>Our team will review your registration and follow up if needed.</p><p>Thank you,<br/>EXIT Team</p>`
+    html: `<p>Hi ${fullName},</p><p>We received your EXIT coach registration submission.</p><p><strong>School:</strong> ${registration.school}<br/><strong>Location:</strong> ${registration.cityStateCountry}<br/><strong>Grade:</strong> ${registration.grade}<br/><strong>Background Level:</strong> ${registration.backgroundLevel}<br/><strong>Event Interest:</strong> ${registration.eventInterest}</p><p>Our team will review your registration and follow up if needed.</p><p>Thank you,<br/>EXIT Team</p>`
   })
 
   if (result?.error) {

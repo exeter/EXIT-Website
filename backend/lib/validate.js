@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 const gradeOptions = ['6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other']
 const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Competitive']
+const eventInterestOptions = ['In person', 'Virtual', 'Both']
 
 const registrationSchema = z
   .object({
@@ -9,11 +10,20 @@ const registrationSchema = z
     firstName: z.string().trim().max(80).optional(),
     lastName: z.string().trim().max(80).optional(),
     name: z.string().trim().max(160).optional(),
-    phoneNumber: z.string().trim().min(7).max(40),
+    phoneNumber: z
+      .string()
+      .trim()
+      .max(40)
+      .optional()
+      .default('')
+      .refine(value => !value || value.replace(/\D/g, '').length >= 10, {
+        message: 'Enter a valid phone number.'
+      }),
     school: z.string().trim().max(140).optional(),
     cityStateCountry: z.string().trim().max(240).optional(),
     grade: z.enum(gradeOptions).optional(),
     backgroundLevel: z.enum(backgroundLevelOptions).optional(),
+    eventInterest: z.enum(eventInterestOptions).optional(),
     mailingAddress: z.string().trim().max(240).optional(),
     password: z.string().optional(),
     confirmPassword: z.string().optional(),
@@ -77,6 +87,14 @@ const registrationSchema = z
           message: 'Background level is required.'
         })
       }
+
+      if (!value.eventInterest) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['eventInterest'],
+          message: 'Event interest is required.'
+        })
+      }
     }
   })
 
@@ -91,7 +109,10 @@ export function parseRegistrationInput(input) {
     }
   }
 
-  const normalizedPhone = parsed.data.phoneNumber.replace(/[^\d+\-()\s]/g, '').replace(/\s+/g, ' ').trim()
+  const normalizedPhone = (parsed.data.phoneNumber ?? '')
+    .replace(/[^\d+\-()\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
   const legacyNameParts = (parsed.data.name ?? '').trim().split(/\s+/).filter(Boolean)
   const fallbackFirstName = legacyNameParts[0] ?? ''
   const fallbackLastName = legacyNameParts.slice(1).join(' ')
@@ -102,6 +123,7 @@ export function parseRegistrationInput(input) {
   const normalizedCityStateCountry = parsed.data.cityStateCountry?.trim() || parsed.data.mailingAddress?.trim() || ''
   const normalizedGrade = parsed.data.grade || (isLegacyShape ? 'Other' : '')
   const normalizedBackgroundLevel = parsed.data.backgroundLevel || (isLegacyShape ? 'Beginner' : '')
+  const normalizedEventInterest = parsed.data.eventInterest || (isLegacyShape ? 'Both' : '')
 
   return {
     ok: true,
@@ -114,6 +136,7 @@ export function parseRegistrationInput(input) {
       cityStateCountry: normalizedCityStateCountry,
       grade: normalizedGrade,
       backgroundLevel: normalizedBackgroundLevel,
+      eventInterest: normalizedEventInterest,
       honeypot: parsed.data.honeypot
     }
   }

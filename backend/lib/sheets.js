@@ -38,7 +38,7 @@ export async function appendRegistrationRow(row) {
   const clientEmail = getRequiredEnv('GOOGLE_SERVICE_ACCOUNT_EMAIL')
   const privateKey = getGooglePrivateKey()
   const sheetId = getRequiredEnv('GOOGLE_SHEET_ID')
-  const range = process.env.GOOGLE_SHEET_RANGE || 'Signups!A:L'
+  const range = process.env.GOOGLE_SHEET_RANGE || 'Signups!A:M'
 
   const auth = new google.auth.JWT({
     email: clientEmail,
@@ -61,6 +61,7 @@ export async function appendRegistrationRow(row) {
       row.cityStateCountry,
       row.grade,
       row.backgroundLevel,
+      row.eventInterest,
       row.honeypot || '',
       row.ipAddress || ''
     ]
