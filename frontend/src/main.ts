@@ -52,6 +52,13 @@ const socialLinks: readonly { brand: string; label: string; href: string }[] = [
 
 const socialIconColor = '454039'
 
+type StatusKind = 'idle' | 'success' | 'warning' | 'error'
+
+type StatusContent = {
+  text: string
+  html?: string
+}
+
 function renderSocialLinksHtml(): string {
   return socialLinks
     .map(
@@ -187,6 +194,41 @@ function escapeHtml(value: string): string {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
+}
+
+function escapeAttribute(value: string): string {
+  return escapeHtml(value).replaceAll('`', '&#96;')
+}
+
+function buildRegistrationSupportMailtoHref(payload: Pick<RegistrationPayload, 'email' | 'firstName' | 'lastName' | 'school' | 'eventInterest'>): string {
+  const fullName = [payload.firstName, payload.lastName].filter(Boolean).join(' ').trim() || 'Unknown student'
+  const subject = 'EXIT registration issue'
+  const body = [
+    'Hi EXIT team,',
+    '',
+    'I encountered a registration problem on the EXIT website.',
+    '',
+    `Student name: ${fullName}`,
+    `Signed-in email: ${payload.email}`,
+    `School: ${payload.school}`,
+    `Event interest: ${payload.eventInterest}`,
+    '',
+    'Please help me complete my registration.',
+    '',
+    'Thanks,'
+  ].join('\n')
+
+  return `mailto:${encodeURIComponent(contestContactEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+}
+
+function buildRegistrationFailureStatus(payload: Pick<RegistrationPayload, 'email' | 'firstName' | 'lastName' | 'school' | 'eventInterest'>): StatusContent {
+  const href = buildRegistrationSupportMailtoHref(payload)
+  const contactEmailLabel = escapeHtml(contestContactEmail)
+
+  return {
+    text: `Registration failed. Contact ${contestContactEmail} for further assistance.`,
+    html: `Registration failed. Contact <a href="${escapeAttribute(href)}">${contactEmailLabel}</a> for further assistance.`
+  }
 }
 
 function getRoute(): Route {
@@ -641,8 +683,15 @@ function setupRegisterForm() {
     msg.textContent = message ?? ''
   }
 
-  function setStatus(message: string, kind: 'idle' | 'success' | 'warning' | 'error') {
-    registerStatusNode.textContent = message
+  function setStatus(content: string | StatusContent, kind: StatusKind) {
+    if (typeof content === 'string') {
+      registerStatusNode.textContent = content
+    } else if (content.html) {
+      registerStatusNode.innerHTML = content.html
+    } else {
+      registerStatusNode.textContent = content.text
+    }
+
     registerStatusNode.dataset.kind = kind
   }
 
@@ -695,7 +744,7 @@ function setupRegisterForm() {
 
     isSubmitting = true
     submitButton.disabled = true
-    setStatus('Submitting registration...', 'idle')
+    setStatus('Sending the confirmation email...', 'idle')
 
     try {
       const response = await fetch('/api/register', {
@@ -710,23 +759,23 @@ function setupRegisterForm() {
         error?: string
         emailSent?: boolean
         emailError?: string
+        detail?: string
       } | null
 
       if (!response.ok) {
-        throw new Error(body?.error ?? 'Registration failed. Please try again.')
+        throw new Error(body?.detail ?? body?.error ?? 'Registration failed. Please try again.')
       }
 
       registerForm.reset()
 
       if (body?.emailSent === false) {
-        const technicalDetail = body.emailError?.trim() ? ` Technical detail: ${body.emailError.trim()}` : ''
-        setStatus(`Registration was saved, but confirmation email delivery failed.${technicalDetail}`, 'warning')
+        setStatus(buildRegistrationFailureStatus(payload), 'error')
       } else {
-        setStatus('Registration submitted successfully. Please check your email.', 'success')
+        setStatus('Successfully registered!', 'success')
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unexpected error. Please try again.'
-      setStatus(message, 'error')
+      console.error('Registration submission failed', error)
+      setStatus(buildRegistrationFailureStatus(payload), 'error')
     } finally {
       isSubmitting = false
       submitButton.disabled = false
