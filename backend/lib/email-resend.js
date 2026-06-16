@@ -1,5 +1,7 @@
 import { Resend } from 'resend'
 
+let resendClient
+
 function getRequiredEnv(name) {
   const value = process.env[name]
   if (!value) {
@@ -12,7 +14,9 @@ export async function sendConfirmationEmail(registration) {
   const apiKey = getRequiredEnv('RESEND_API_KEY')
   const from = getRequiredEnv('RESEND_FROM_EMAIL')
 
-  const resend = new Resend(apiKey)
+  if (!resendClient) {
+    resendClient = new Resend(apiKey)
+  }
 
   const fullName = [registration.firstName, registration.lastName]
     .map(value => String(value ?? '').trim())
@@ -35,12 +39,21 @@ export async function sendConfirmationEmail(registration) {
     'EXIT Team'
   ].join('\n')
 
-  const result = await resend.emails.send({
+  const sendStartedAt = Date.now()
+
+  const result = await resendClient.emails.send({
     from,
     to: registration.email,
     subject,
     text,
-    html: `<p>Hi ${fullName},</p><p>We received your EXIT coach registration submission.</p><p><strong>School:</strong> ${registration.school}<br/><strong>Location:</strong> ${registration.cityStateCountry}<br/><strong>Grade:</strong> ${registration.grade}<br/><strong>Background Level:</strong> ${registration.backgroundLevel}<br/><strong>Event Interest:</strong> ${registration.eventInterest}</p><p>Our team will review your registration and follow up if needed.</p><p>Thank you,<br/>EXIT Team</p>`
+    html: `<p>Hi ${fullName},</p><p>We received your EXIT registration submission.</p>
+      <p><strong>School:</strong> ${registration.school}<br/>
+      <strong>Location:</strong> ${registration.cityStateCountry}<br/>
+      <strong>Grade:</strong> ${registration.grade}<br/>
+      <strong>Background Level:</strong> ${registration.backgroundLevel}<br/>
+      <strong>Event Interest:</strong> ${registration.eventInterest}</p>
+      <p>Our team will review your registration and follow up if needed.</p>
+    <p>Thank you,<br/>EXIT Team</p>`
   })
 
   if (result?.error) {
@@ -49,4 +62,10 @@ export async function sendConfirmationEmail(registration) {
       : 'Unknown email provider error.'
     throw new Error(`Resend: ${providerMessage}`)
   }
+
+  console.log('Resend confirmation email sent', {
+    email: registration.email,
+    durationMs: Date.now() - sendStartedAt,
+    id: result?.data?.id ?? null
+  })
 }

@@ -107,7 +107,9 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    const requestStartedAt = Date.now()
     const { appendRegistrationRow, parseRegistrationInput, sendConfirmationEmail } = await loadRegistrationModules()
+    const modulesLoadedAt = Date.now()
 
     const parsed = parseRegistrationInput(req.body)
     if (!parsed.ok) {
@@ -126,12 +128,40 @@ module.exports = async function handler(req, res) {
       return json(res, 202, { ok: true })
     }
 
+    const sheetStartedAt = Date.now()
     const sheetResult = await appendRegistrationRow(registration)
-    await sendConfirmationEmail(registration)
+    const sheetFinishedAt = Date.now()
+
+    const emailStartedAt = Date.now()
+    let emailSent = false
+    let emailError
+
+    try {
+      await sendConfirmationEmail(registration)
+      emailSent = true
+    } catch (error) {
+      emailError = error instanceof Error ? error.message : 'Unexpected email error.'
+      console.error('Confirmation email failed after registration was saved', {
+        message: emailError,
+        email: registration.email
+      })
+    }
+
+    const requestFinishedAt = Date.now()
+
+    console.log('Registration request timings', {
+      moduleLoadMs: modulesLoadedAt - requestStartedAt,
+      sheetsMs: sheetFinishedAt - sheetStartedAt,
+      emailMs: requestFinishedAt - emailStartedAt,
+      totalMs: requestFinishedAt - requestStartedAt,
+      emailSent
+    })
 
     return json(res, 200, {
       ok: true,
-      storedAt: sheetResult.timestamp
+      storedAt: sheetResult.timestamp,
+      emailSent,
+      emailError
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unexpected server error.'

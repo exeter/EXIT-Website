@@ -877,6 +877,13 @@ ul {
   margin: var(--space-3) 0 0;
   color: var(--ink-faint);
   font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.status a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .status[data-kind='success'] {
