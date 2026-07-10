@@ -35,7 +35,7 @@ async function instantiateClerk() {
 const eventSummary = {
   name: 'Exeter Informatics Tournament',
   shortName: 'EXIT',
-  date: 'Mid-October, 2026',
+  date: 'Weekend of October 11, 2026',
   venue: 'Online and In-Person',
   location: 'Phillips Exeter Academy',
   club: 'Exeter Computing Club'
@@ -98,7 +98,7 @@ const homeSections: readonly HomeSection[] = [
     paragraphs: [
       {
         html:
-          'The Exeter Informatics Tournament will take place in <strong>mid October</strong> on a weekend. Exact dates and times will be announced closer to the event. Participants may compete in person at Phillips Exeter Academy or take part through the online component from anywhere.'
+          'The Exeter Informatics Tournament will take place on the <strong>weekend of October 11, 2026</strong>. Exact times will be announced closer to the event. Participants may compete in person at Phillips Exeter Academy or take part through the online component from anywhere.'
       }
     ]
   },
