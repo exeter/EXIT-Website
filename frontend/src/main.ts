@@ -107,7 +107,7 @@ const homeSections: readonly HomeSection[] = [
     paragraphs: [
       {
         html:
-          'For in-person competitors, there will be two rounds: <strong>individual and team</strong> (up to <strong>5</strong> people per team). You will be able to register your team closer to the contest, and for those without a team that want one, can find teammates on-site. For virtual competitors, there will only be an individual round.'
+          'For in-person competitors, there will be two rounds: <strong>individual and team</strong> (up to <strong>4</strong> people per team). You will be able to register your team closer to the contest, and for those without a team that want one, can find teammates on-site. For virtual competitors, there will only be an individual round.'
       },
       {
         html:
