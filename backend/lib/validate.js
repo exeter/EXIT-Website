@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const gradeOptions = ['6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other']
+const gradeOptions = ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other']
 const backgroundLevelOptions = ['Beginner', 'Intermediate', 'Advanced']
 const eventInterestOptions = ['In person', 'Virtual', 'Both']
 

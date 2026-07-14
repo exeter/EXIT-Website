@@ -114,7 +114,7 @@ const homeSections: readonly HomeSection[] = [
       },
       {
         html:
-          'Both rounds will be split into <strong>beginner and advanced</strong> divisions, and participants are free to select their division. Anyone in <strong>middle or high school</strong> is eligible to compete in EXIT. Prize money will be prioritized for in-person and advanced divisions (prize details TBD).'
+          'Both rounds will be split into <strong>beginner and advanced</strong> divisions, and participants are free to select their division. EXIT is open to <strong>elementary, middle, and high school</strong> students. Prize money will be prioritized for in-person and advanced divisions (prize details TBD).'
       }
     ]
   },
@@ -170,7 +170,7 @@ const tournamentDirectors: readonly TournamentDirector[] = [
 /** Set to true when headshots are in /public/directors/. */
 const showDirectorPhotos = false
 
-const gradeOptions = ['4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
+const gradeOptions = ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'Postgraduate', 'Other'] as const
 const backgroundLevelOptions = [
   { value: 'Beginner', label: 'Beginner — just starting out' },
   { value: 'Intermediate', label: 'Intermediate — USACO bronze–silver' },
