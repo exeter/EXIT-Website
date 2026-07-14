@@ -77,7 +77,8 @@ a:hover {
 .nav-link:focus-visible,
 .link-button:focus-visible,
 .button:focus-visible,
-.footer-social-link:focus-visible {
+.footer-social-link:focus-visible,
+.landing-discord:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -336,6 +337,83 @@ ul {
   gap: var(--space-3) var(--space-4);
   justify-content: center;
   align-items: center;
+}
+
+.landing-discord {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-5) auto 0;
+  max-width: min(26rem, 100%);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+  background: var(--bg-elevated);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.landing-discord:hover {
+  text-decoration: none;
+  border-color: var(--border-strong);
+  background: var(--accent-soft);
+}
+
+.landing-discord:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.landing-discord-icon {
+  flex-shrink: 0;
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.landing-discord-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.landing-discord-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.landing-discord-sub {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  line-height: 1.35;
+}
+
+.landing-discord-arrow {
+  flex-shrink: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent);
+  transition: transform 0.15s ease;
+}
+
+.landing-discord:hover .landing-discord-arrow {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-discord,
+  .landing-discord-arrow {
+    transition: none;
+  }
 }
 
 .link-button {
@@ -1169,6 +1247,10 @@ ul {
   .landing-actions .link-button {
     width: 100%;
     text-align: center;
+  }
+
+  .landing-discord {
+    max-width: none;
   }
 }
 

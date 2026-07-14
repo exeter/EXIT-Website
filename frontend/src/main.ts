@@ -43,14 +43,17 @@ const eventSummary = {
 
 const contestContactEmail = 'exeterecc@gmail.com'
 
+const discordInviteUrl = 'https://discord.gg/4UKwwuHG'
+
 /** Update hrefs to your real community channels. Icons load from simpleicons.org CDN. */
 const socialLinks: readonly { brand: string; label: string; href: string }[] = [
-  { brand: 'discord', label: 'Discord', href: 'https://discord.gg/4UKwwuHG' },
+  { brand: 'discord', label: 'Discord', href: discordInviteUrl },
   { brand: 'github', label: 'GitHub', href: 'https://github.com/ECC-Project-Group' },
   { brand: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/peacomputingclub/' }
 ] as const
 
 const socialIconColor = '454039'
+const discordIconColor = '9d2235'
 
 type StatusKind = 'idle' | 'success' | 'warning' | 'error'
 
@@ -444,6 +447,26 @@ function renderHomePage(): string {
         <a class="link-button link-button-primary" href="#/register">Register</a>
         <a class="link-button link-button-quiet" href="#/info">Contest details</a>
       </div>
+      <a
+        class="landing-discord"
+        href="${escapeHtml(discordInviteUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          class="landing-discord-icon"
+          src="https://cdn.simpleicons.org/discord/${discordIconColor}"
+          alt=""
+          width="22"
+          height="22"
+          loading="lazy"
+        />
+        <span class="landing-discord-copy">
+          <span class="landing-discord-title">Join our Discord</span>
+          <span class="landing-discord-sub">Announcements, teammates, and Q&amp;A</span>
+        </span>
+        <span class="landing-discord-arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   `
 }
